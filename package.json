@@ -1,0 +1,32 @@
+{
+  "name": "poemwithgulp",
+  "version": "1.0.0",
+  "description": "Poem app using sockets React and Gulp",
+  "main": "server/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jimbojones1/PoemWithGulp.git"
+  },
+  "author": "Jim Haff",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Jimbojones1/PoemWithGulp/issues"
+  },
+  "homepage": "https://github.com/Jimbojones1/PoemWithGulp#readme",
+  "dependencies": {
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.2.0",
+    "body-parser": "^1.15.0",
+    "browserify": "^13.0.0",
+    "cors": "^2.7.1",
+    "express": "^4.13.4",
+    "gulp": "^3.9.1",
+    "gulp-watch": "^4.3.5",
+    "socket.io": "^1.4.5",
+    "socket.io-client": "^1.4.5",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
