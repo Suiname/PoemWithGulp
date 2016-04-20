@@ -8,26 +8,53 @@ var Container = React.createClass({
   displayName: 'Container',
 
   getInitialState: function () {
-    return { logged: false, users: [], chatBoxes: [], chatOpen: false };
+    return { logged: false, users: [], chatBoxes: [], chatOpen: false, userMessage: '', PrvMsgData: [] };
   },
   componentDidMount: function () {
     var self = this;
 
     socket.on('updateUsers', function (data) {
       console.log(data);
-      console.log('this is updateUser');
       var state = self.state;
       state.users = data;
-      console.log(state);
       self.setState(state);
-      console.log('this is line 14');
+    });
+
+    socket.on('updateChat', function (data) {
+      var state = self.state;
+      state.userMessage = data;
+      self.setState(state);
+    });
+
+    socket.on('updatePrivateChat', function (from, userTo, privateMessage) {
+      console.log(from);
+      console.log(userTo);
+      console.log(privateMessage);
+      var state = self.state;
+      state.PrvMsgData.push({
+        from: from,
+        userTo: userTo,
+        privateMessage: privateMessage
+      });
+
+      if (self.state.chatBoxes.indexOf(userTo) > -1) {
+        state.chatOpen = true;
+        self.setState(state);
+        console.log('if happened');
+        self.setState(state);
+      } else {
+        state.chatOpen = true;
+        state.chatBoxes.push(from);
+        self.setState(state);
+      }
+
+      console.log('-------------------- this is updatePrivateCHat');
     });
   },
   getIndex: function (someArray, users) {
     return someArray.indexOf(users);
   },
   removeBox: function (user) {
-
     this.setState([this.state.chatBoxes.splice(this.getIndex(this.state.chatBoxes, user), 1)]);
   },
   addChatBox: function (username) {
@@ -49,11 +76,11 @@ var Container = React.createClass({
     return React.createElement(
       'div',
       { 'class': 'container' },
-      this.state.logged ? React.createElement(UserList, { users: this.state.users, chatOpen: this.state.chatOpen, logged: this.state.logged, addChatBox: this.addChatBox }) : React.createElement(Username, { logged: this.hasSubmitted }),
+      this.state.logged ? React.createElement(UserList, { userMessage: this.state.userMessage, users: this.state.users, chatOpen: this.state.chatOpen, logged: this.state.logged, addChatBox: this.addChatBox }) : React.createElement(Username, { logged: this.hasSubmitted }),
       React.createElement(
         'div',
         { id: 'prvBoxarea', className: 'nine columns' },
-        this.state.chatOpen && this.state.logged ? React.createElement(PrivateMessageBox, { chatBoxes: this.state.chatBoxes, removeBox: this.removeBox }) : null
+        this.state.chatOpen && this.state.logged ? React.createElement(PrivateMessageBox, { PrvMsgData: this.state.PrvMsgData, chatBoxes: this.state.chatBoxes, removeBox: this.removeBox }) : null
       )
     );
   }
@@ -85,6 +112,11 @@ var UserList = React.createClass({
         'div',
         { id: 'userList', className: 'three columns' },
         React.createElement(
+          'p',
+          null,
+          this.props.userMessage
+        ),
+        React.createElement(
           'h5',
           null,
           'Users'
@@ -102,19 +134,68 @@ var UserList = React.createClass({
 var PrivateMessageBox = React.createClass({
   displayName: 'PrivateMessageBox',
 
+
+  removeClick: function (user) {
+    console.log(user);
+    this.props.removeBox(user);
+  },
+  render: function () {
+    var self = this;
+    console.log(this.props.PrvMsgData);
+    console.log('thiss is privateMessageBox');
+    var userBoxes = this.props.chatBoxes.map(function (user, i) {
+      return React.createElement(
+        'div',
+        { className: 'PrivateMessageBox', key: i },
+        React.createElement(PrivateMessageHeader, { data: user }),
+        React.createElement(PrivateMessageButton, { removeClick: self.removeClick, data: user }),
+        React.createElement(PrivateMessageArea, { PrvMsgData: self.props.PrvMsgData }),
+        React.createElement(PrivateMessageInput, { data: user })
+      );
+    });
+
+    return React.createElement(
+      'div',
+      null,
+      userBoxes
+    );
+  }
+});
+
+var PrivateMessageHeader = React.createClass({
+  displayName: 'PrivateMessageHeader',
+
+  render: function () {
+    return React.createElement(
+      'h4',
+      { className: 'prvUserInfo' },
+      this.props.data
+    );
+  }
+});
+
+var PrivateMessageButton = React.createClass({
+  displayName: 'PrivateMessageButton',
+
+  render: function () {
+    return React.createElement(
+      'button',
+      { className: 'removeButton', onClick: this.props.removeClick.bind(this, this.props.user) },
+      'X'
+    );
+  }
+});
+
+var PrivateMessageInput = React.createClass({
+  displayName: 'PrivateMessageInput',
+
   getInitialState: function () {
     return { privateMessage: '' };
   },
-  handlePrivateMeassage: function (event) {
+  handlePrivateMessage: function (event) {
     var state = this.state;
     state.privateMessage = event.target.value;
     this.setState(state);
-
-    // event.preventDefault()
-    // console.log(user)
-
-    // var userTo = user
-    // this.setState(state)
   },
   submitMessage: function (user, event) {
     console.log(user);
@@ -125,37 +206,27 @@ var PrivateMessageBox = React.createClass({
       socket.emit('pm', userTo, privateMessage);
       this.setState({ privateMessage: '' });
     }
-    console.log('key press is working');
-  },
-  removeClick: function (user) {
-    console.log(user);
-    this.props.removeBox(user);
   },
   render: function () {
-    var self = this;
-    var userBoxes = this.props.chatBoxes.map(function (user, i) {
+    return React.createElement('input', { className: 'prvSend', onChange: this.handlePrivateMessage, onKeyPress: this.submitMessage.bind(this, this.props.data), value: this.state.privateMessage });
+  }
+});
+
+var PrivateMessageArea = React.createClass({
+  displayName: 'PrivateMessageArea',
+
+  render: function () {
+    var userData = this.props.PrvMsgData.map(function (data, i) {
       return React.createElement(
-        'div',
-        { className: 'PrivateMessageBox', key: i },
-        React.createElement(
-          'h4',
-          { className: 'prvUserInfo' },
-          user
-        ),
-        React.createElement(
-          'button',
-          { className: 'removeButton', onClick: self.removeClick.bind(self, user) },
-          'X'
-        ),
-        React.createElement('div', { className: 'PrivateMessage' }),
-        React.createElement('input', { className: 'prvSend', onChange: self.handlePrivateMeassage, onKeyPress: self.submitMessage.bind(self, user), value: self.state.privateMessage })
+        'p',
+        { key: i },
+        data.from + " : " + data.privateMessage + " to: " + data.userTo
       );
     });
-
     return React.createElement(
       'div',
-      null,
-      userBoxes
+      { className: 'PrivateMessage' },
+      userData
     );
   }
 });
