@@ -109,10 +109,11 @@ io.sockets.on('connect', function(socket){
     })
 
 
+
+
     io.sockets.connected[onlineClients[userTo]].emit('updatePrivateChat', socket.username, userTo, privateMessage)
     io.sockets.connected[onlineClients[socket.username]].emit('updatePrivateChat', socket.username, userTo, privateMessage)
   })
-
 
 
 
