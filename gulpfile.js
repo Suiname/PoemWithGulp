@@ -6,16 +6,19 @@ var source      = require('vinyl-source-stream');
 var watch       = require('gulp-watch');
 
 
-
-
-
-
-watch(['./clientReact/*.js'], function(){
-  console.log('aspp has been modified lets recompile')
-  gulp.start('default')
+//  first arguement is the files I want to watch, the second is the task to run
+gulp.task('watch', function(){
+  gulp.watch(['./clientReact/*.js'], ['react'])
+  gulp.watch(['./server/public/styles/*.less'], ['compile-less'])
 })
 
-gulp.task('default', function(){
+
+// watch(['./clientReact/*.js'], function(){
+//   console.log('aspp has been modified lets recompile')
+//   gulp.start('default')
+// })
+
+gulp.task('react', function(){
   return browserify('./clientReact/app.js')
           .transform('babelify', {presets: ["react"]})
           .bundle()
@@ -28,3 +31,6 @@ gulp.task('compile-less', function(){
   .pipe(less())
   .pipe(gulp.dest('./server/public/styles'))
 })
+
+
+gulp.task('default', ['react', 'compile-less', 'watch'])

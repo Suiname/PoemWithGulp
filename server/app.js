@@ -74,7 +74,7 @@ io.sockets.on('connect', function(socket){
     //username = string value username
     usernames[username.username] = username.username
 
-    socket.emit('updateChat', socket.username + ' you have connected')
+    socket.emit('updateChat', 'Come Poem ' + socket.username + ', were here now')
     console.log(onlineClients)
     console.log(usernames)
     socket.broadcast.emit('updateUsers', Object.keys(usernames))

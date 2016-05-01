@@ -1,3 +1,207 @@
-h1 {
-  width: 5/7;
+//color Pallette
+//++++++++++++++++++++++++++++++++++
+@green: #588C73;
+@yellow: #F2E394;
+@orange: #F2AE72;
+@red: #D96459;
+@maroon: #8C4646;
+
+//fonts
+// ++++++++++++++++++++++++++++++++++
+@amatic: 'Amatic SC', cursive;
+
+html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
+
+body {
+  background-color: @green;
+}
+
+
+
+//Login Page ##############################################
+.username{
+  margin-left: 40%;
+  margin-top: 25%;
+  margin-right: 40%;
+  position: fixed;
+}
+
+// Home Page Less *****************************************
+//**********************************************************
+#main-page-header {
+  background-color: @orange;
+  .Logo {
+    font-size: 3em;
+  }
+}
+
+#userList{
+  background-color: @yellow;
+  width: 24%;
+  position: absolute;
+  left: 0px;
+  bottom: 0;
+  border: 1.7px solid @orange;
+  box-shadow: 0 8px 6px 1.3px black;
+    .UserListHeader{
+        margin-bottom: 10px;
+        border-bottom: 1.7px solid @orange;
+        height: 2.5em;
+         -moz-box-shadow:    inset 0 0 4px @orange;
+         -webkit-box-shadow: inset 0 0 4px @orange;
+         box-shadow:         inset 0 0 4px @orange;
+    }
+    ul {
+      margin-left: 11%;
+      list-style: none;
+      clear: both;
+      li{
+        font-size: 1em;
+        border: 1px solid whitesmoke;
+        width: 76%;
+        padding: 3.1%;
+        padding-left: 7%;
+        &:hover{
+          border-color: @orange;
+          }
+       }
+    }
+    h5 {
+    margin-left: 14%;
+    font-family: 'Amatic SC', cursive;
+    font-weight: 700;
+    width:100%;
+  }
+}
+
+#Welcome-Container{
+  background-color: @red;
+  width: 60%;
+  height: 22em;
+  float: right;
+  .username{
+    margin-left: 40%;
+    margin-top: 25%;
+    margin-right: 40%;
+   }
+  #quote{
+    width: 40%;
+    margin-left: 54%;
+    margin-top: 20%;
+  }
+}
+
+
+#prvBoxarea{
+  background-color: @maroon;
+  width: 60%;
+  overflow-x: auto;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 240px;
+}
+
+
+// Private Message Box components ##$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$##$
+//#*#*#**#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
+
+
+.PrivateMessageBox{
+  border: 1px solid @orange;
+  float: right;
+  width: 25%;
+  margin-right: 1.9%;
+  height: 240px;
+  box-shadow: 0 8px 6px -6px black;
+    .top-bar{
+        height:           16%;
+        padding:          0.8%;
+        padding-right:    0.5%;
+        background-color: #D96459;
+        border: 1px solid @orange;
+         h4 {
+          float: left;
+          margin: 0 auto;
+          margin-left: 3%;
+          margin-top: 1%;
+          font-size: 2.0rem;
+          color: #F2E394;
+          width: 50%;
+        }
+        i {
+          color: @yellow;
+        }
+        .removeButton {
+          float: right;
+          margin-bottom: 0;
+          margin-top:    0;
+          }
+        #chatButtonUl{
+          list-style: none;
+          font-size: 1.3em;
+          display: block;
+          float: right;
+          margin-right: 9%;
+          height: 14px;
+         li {
+            width: 20%;
+            display: inline-block;
+          }
+         }
+       }
+    .prvSend {
+            margin-bottom: 0;
+            height: 39px;
+          }
+    .PrivateMessage{
+      width: 100%;
+      height: 68%;
+      overflow: auto;
+      background-color: #F2E394;
+      p {
+         font-size: 0.8em;
+          margin-bottom: 0.1em;
+          color: black;
+          margin-left: 2.8%;
+          width: 80%;
+          margin-top: 0.2em;
+        }
+      .Sender {
+        color: @green;
+        font-weight: bold;
+      }
+      .Reciepient {
+        color: @maroon;
+        font-weight: bold;
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

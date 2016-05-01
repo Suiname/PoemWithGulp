@@ -1,67 +1,141 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: #588C73;
+}
+
 .username{
-  margin-left: 34%;
-  margin-top: 29%;
+  margin-left: 40%;
+  margin-top: 25%;
+  margin-right: 40%;
+  position: fixed;
+}
+
+ul {
+  margin-left: 11%;
+  list-style: none;
 }
 
 #userList{
-  background-color: pink;
-  width: 30%;
+  background-color: #F2E394;
+  width: 21%;
+  position: absolute;
+  left: 0px;
+  bottom: 0;
+  box-shadow: 0 8px 6px -6px #588C73;
+}
+
+#userList li{
+  font-size: 1em;
+  border: 1px solid whitesmoke;
+  width: 76%;
+  padding: 3.1%;
+  padding-left: 7%;
+}
+
+#chatButtonUl{
+    list-style: none;
+    font-size: 1.3em;
+    display: block;
+    float: right;
+    margin-right: 5%;
+    height: 14px;
+}
+
+#chatButtonUl li {
+  width: 20%;
+  display: inline-block;
 }
 
 #prvBoxarea{
   background-color: aliceblue;
-  margin-left: 2%;
-  overflow: hidden;
+  width: 60%;
+  overflow-x: auto;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 240px;
+
 }
 
 h5 {
   margin-left: 14%;
+  font-family: 'Amatic SC', cursive;
 }
 
-ul {
-  margin-left: 20%;
-  list-style: none;
-  text-decoration: underline;
-}
+
 
 .PrivateMessageBox{
-  border: 3px solid black;
+  border: 1px solid black;
   float: right;
-  width: 15%;
+  width: 25%;
   margin-right: 1.5%;
-
-  height: 100px;
+  height: 240px;
+  box-shadow: 0 8px 6px -6px #588C73;
 }
 
 .prvSend {
-  width: 13.28%;
-  position: fixed;
+  margin-bottom: 0;
+  height: 39px;
 }
 
 .PrivateMessage{
   width: 100%;
-  height: 61%;
-  overflow: scroll;
+  height: 68%;
+  overflow: auto;
+  background-color: #F2E394;
 }
 
 h4 {
   float: left;
   margin: 0 auto;
-  font-size: 1rem;
+  margin-left: 3%;
+  margin-top: 1%;
+  font-size: 2.0rem;
+  color: #F2E394;
+  width: 50%;
 }
 
 p {
-  font-size: 10px;
+  font-size: 0.8em;
+  margin-bottom: 3px;
+  color: #8C4646;
+  margin-left: 0.8%;
 }
 
 .top-bar{
-  width: 98.5%;
-  height: 20px;
-  padding: 0.8%;
-  background-color: red;
+  height:           16%;
+  padding:          0.8%;
+  padding-right:    0.5%;
+  background-color: #D96459;
 }
 
 .removeButton {
   float: right;
-  opacity: 100%;
+  margin-bottom: 0;
+  margin-top:    0;
+}
+
+.Sender {
+  color: #588C73;
+}
+
+.Reciepient {
+  color: white;
+}
+
+#main-page-header {
+  background-color: blue;
+}
+
+.Welcome-Container{
+  background-color: red;
+  width: 60%;
+  height: 22em;
+  float: right;
 }
