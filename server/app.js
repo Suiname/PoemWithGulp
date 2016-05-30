@@ -63,6 +63,14 @@ var onlineClients = {},
 
 io.sockets.on('connect', function(socket){
 
+  socket.on('disconnect', function(){
+    delete usernames[socket.username]
+    io.sockets.emit('updateUsers', Object.keys(usernames))
+
+
+  })
+
+
   socket.on('adduser', function(username){
     console.log(username.username)
     //  Here I'm saving the username of the current socket
@@ -74,7 +82,7 @@ io.sockets.on('connect', function(socket){
     //username = string value username
     usernames[username.username] = username.username
 
-    socket.emit('updateChat', 'Come Poem ' + socket.username + ', were here now')
+    socket.emit('updateChat', 'Welcome ' + socket.username + ', may inspiration move you brightly, everyday.', username.username)
     console.log(onlineClients)
     console.log(usernames)
     socket.broadcast.emit('updateUsers', Object.keys(usernames))

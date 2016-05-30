@@ -6,7 +6,7 @@ var socket = io.connect();
 
 var Container = React.createClass({
     getInitialState: function(){
-      return {logged: false, loggedHeader: false, users: [], chatBoxes: [], chatOpen: false, userMessage: '', PrvMsgData: []}
+      return {logged: false, loggedHeader: false, users: [], chatBoxes: [], chatOpen: false, userMessage: '', PrvMsgData: [], room: false, modal: false, user: ''}
     },
     componentDidMount: function(){
       var self = this;
@@ -17,8 +17,9 @@ var Container = React.createClass({
         self.setState(state);
       });
 
-      socket.on('updateChat', function(data){
+      socket.on('updateChat', function(data, username){
         var state = self.state;
+        socket.username = username;
          state.userMessage = data
          self.setState(state)
       })
@@ -28,19 +29,22 @@ var Container = React.createClass({
         console.log(userTo)
         console.log(privateMessage)
         var state = self.state;
-        state.PrvMsgData.push({
-          from: from,
-          userTo: userTo,
-          privateMessage: privateMessage
-        })
+        if (privateMessage != 'poemWithMeAccepted'){
+               state.PrvMsgData.push({
+                from: from,
+                userTo: userTo,
+                privateMessage: privateMessage
+              })
+           }
 
-        if(self.state.chatBoxes.indexOf(userTo) > -1 || self.state.chatBoxes.indexOf(from) > -1){
+
+        if(self.state.chatBoxes.indexOf(userTo) > -1 && privateMessage != 'poemWithMeAccepted' || self.state.chatBoxes.indexOf(from) > -1 && privateMessage != 'poemWithMeAccepted'){
           state.chatOpen = true;
-          self.setState(state)
-          console.log(userTo)
+          self.setState(state);
+          console.log(userTo);
           console.log('if happened----------------------------------------------------------------------------------------------------------------')
         }
-        else  {
+        else if(privateMessage != 'poemWithMeAccepted'){
           state.chatOpen = true;
           state.chatBoxes.push(from)
           console.log(from)
@@ -48,11 +52,18 @@ var Container = React.createClass({
           self.setState(state)
         }
 
+        if(privateMessage === 'Would You like to Poem with Me' && socket.username === userTo ){
+          state.modal = true;
+          state.user = userTo;
+          self.setState(state);
 
-        console.log('-------------------- this is updatePrivateCHat')
-
-
-
+          console.log('poeom with me happppend ddafkdjasklfjadsklfjasdklfjasd')
+        }
+        else if (privateMessage === 'poemWithMeAccepted'){
+          console.log('poemWithMeAccepted-------------------------------------');
+        }
+        console.log('-------------------- this is updatePrivateCHat');
+        console.log(self.state);
       })
     },
     getIndex: function(someArray, users){
@@ -67,6 +78,22 @@ var Container = React.createClass({
       state.chatOpen = !false
       this.setState(state)
     },
+    modalClick: function(didClick){
+      console.log(didClick)
+      var state = this.state
+      console.log('----------------modalClick')
+      if(didClick){
+        state.room = true;
+        state.modal = false;
+        this.setState(state)
+
+      }
+      else{
+        state.modal = false;
+        this.setState(state)
+      }
+       console.log(state)
+    },
     hasSubmitted: function(submitted){
       if(submitted === 'true'){
         var state     = this.state;
@@ -80,14 +107,15 @@ var Container = React.createClass({
       console.log('line 18-----------------------------------------------------------------------------------------------------')
       return (
                   <div>
+                    <Modal modalClick={this.modalClick} modal={this.state.modal} user={this.state.user}/>
                     {this.state.loggedHeader ? <HeaderContainer/> : null}
                     {this.state.userMessage.length > 1 ? <WelcomeContainer userMessage={this.state.userMessage}/> : null}
-                        {this.state.logged ? <UserList  users={this.state.users} chatOpen={this.state.chatOpen} logged={this.state.logged} addChatBox={this.addChatBox}/>: <Username logged={this.hasSubmitted}/>}
-                        <div id="prvBoxarea" className="container">
-                          <div className="row">
-                        {this.state.chatOpen && this.state.logged ? <PrivateMessageBox PrvMsgData={this.state.PrvMsgData} chatBoxes={this.state.chatBoxes} removeBox={this.removeBox}/> : null}
-                          </div>
-                        </div>
+                    {this.state.logged ? <UserList  users={this.state.users} chatOpen={this.state.chatOpen} logged={this.state.logged} addChatBox={this.addChatBox}/>: <Username logged={this.hasSubmitted}/>}
+                    <div id="prvBoxarea" className="container">
+                      <div className="row">
+                    {this.state.chatOpen && this.state.logged ? <PrivateMessageBox PrvMsgData={this.state.PrvMsgData} chatBoxes={this.state.chatBoxes} removeBox={this.removeBox}/> : null}
+                      </div>
+                    </div>
                  </div>
            )
          }
@@ -152,6 +180,7 @@ var Container = React.createClass({
 
           <h4 className='prvUserInfo'>{this.props.data}</h4>
           <ul id="chatButtonUl">
+            <Feather data={this.props.data} />
             <Minus />
             <PrivateMessageButton removeClick={this.props.removeClick} removeBox={this.props.removeBox} user={this.props.data}/>
           </ul>
@@ -167,6 +196,20 @@ var Container = React.createClass({
         )
       }
     })
+
+  var Feather = React.createClass({
+    joinRoom: function(){
+      console.log('this is working')
+      console.log(this.props)
+      var userTo = this.props.data;
+      socket.emit('pm', userTo, 'Would You like to Poem with Me')
+    },
+    render: function(){
+      return (
+        <li><i className="fa fa-pencil" aria-hidden="true" onClick={this.joinRoom}></i></li>
+        )
+      }
+   })
 
   var PrivateMessageButton = React.createClass({
     removeClick: function(user){
@@ -222,6 +265,8 @@ var Container = React.createClass({
     },
     render: function(){
       var user = this.props.data
+      console.log(user)
+      console.log('My cervix is ripening, Run like an antelope my water is breaking what do you do')
       var filteredData = this.props.PrvMsgData.filter(function(data, i){
         console.log(data)
         return data.userTo === user || user === data.from
@@ -283,31 +328,57 @@ var HeaderElement = React.createClass({
 var WelcomeContainer = React.createClass({
   render: function(){
     return (
-      <div id="Welcome-Container"> <p>{this.props.userMessage}</p><blockquote id="quote">To see a World in a Grain of Sand
-And a Heaven in a Wild Flower,
-Hold Infinity in the palm of your hand
-And Eternity in an hour.</blockquote><quote>William Blake</quote></div>
+      <div id="Welcome-Container">
+       <p>{this.props.userMessage}</p>
+        <blockquote id="quote">"To see a World in a Grain of Sand
+          And a Heaven in a Wild Flower,
+          Hold Infinity in the palm of your hand
+          And Eternity in an hour."
+        </blockquote>
+        <quote>~William Blake</quote>
+      </div>
       )
-  }
+  3 }
 })
 
 
+// Modal ###############################################################
+// #####################################################################
+var Modal = React.createClass({
+  clickYes: function(){
+    console.log('THe modalllll click worked')
+    socket.emit('pm', this.props.user, 'poemWithMeAccepted')
+    this.props.modalClick(true)
+
+
+  },
+  clickNo: function(){
+    this.props.modalClick(false)
+  },
+  render: function(){
+    return (
+      <div id= {this.props.modal ? "dialog" : "dialogClosed"}>
+        <div id="button-modal">
+          <button onClick={this.clickYes}>PoemWithMe</button>
+          <button onClick={this.clickNo}>No Bitch</button>
+        </div>
+      </div>
+    )
+  }
+})
+
+// var ModalButtons = React.createClass({
+//   render: function(){
+//     return (
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+//     )
+//   }
+// })
 // Login information for when a user connects
-// ########################################################################
+// #####################################################################
+
 
   var Username = React.createClass({
       getInitialState: function(){

@@ -12,12 +12,6 @@ gulp.task('watch', function(){
   gulp.watch(['./server/public/styles/*.less'], ['compile-less'])
 })
 
-
-// watch(['./clientReact/*.js'], function(){
-//   console.log('aspp has been modified lets recompile')
-//   gulp.start('default')
-// })
-
 gulp.task('react', function(){
   return browserify('./clientReact/app.js')
           .transform('babelify', {presets: ["react"]})

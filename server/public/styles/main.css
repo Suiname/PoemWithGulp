@@ -6,7 +6,7 @@ body {
   margin: 0;
 }
 body {
-  background-color: #588C73;
+  background-color: #D96459;
 }
 .username {
   margin-left: 40%;
@@ -62,7 +62,9 @@ body {
   background-color: #D96459;
   width: 60%;
   height: 22em;
+  font-family: 'Amatic SC', cursive;
   float: right;
+  font-weight: 700;
 }
 #Welcome-Container .username {
   margin-left: 40%;
@@ -71,11 +73,37 @@ body {
 }
 #Welcome-Container #quote {
   width: 40%;
-  margin-left: 54%;
-  margin-top: 20%;
+  margin-left: 32f%;
+  margin-top: 14%;
+  background-color: floralwhite;
+  padding: 1.3em;
+  border-radius: 11%;
+  color: black;
+  font-size: 1.1em;
+  box-shadow: inset 0 0 1px 1px #F2AE72;
+}
+#Welcome-Container quote {
+  float: right;
+  margin-right: 8%;
+  color: black;
+  box-shadow: inset 0 0 12px -1px #F2AE72;
+  padding: 0.5em;
+  margin-top: -0.8%;
+  background-color: floralwhite;
+  border-radius: 11%;
+}
+#Welcome-Container p {
+  background: floralwhite;
+  margin-bottom: -9%;
+  margin-top: 7%;
+  margin-left: 1%;
+  width: 36%;
+  padding: 0.9em;
+  text-align: center;
+  border-radius: 19%;
+  box-shadow: inset 0 0 1px 1px #F2AE72;
 }
 #prvBoxarea {
-  background-color: #8C4646;
   width: 60%;
   overflow-x: auto;
   position: absolute;
@@ -95,7 +123,7 @@ body {
   height: 16%;
   padding: 0.8%;
   padding-right: 0.5%;
-  background-color: #D96459;
+  background-color: #588C73;
   border: 1px solid #F2AE72;
 }
 .PrivateMessageBox .top-bar h4 {
@@ -127,15 +155,23 @@ body {
   width: 20%;
   display: inline-block;
 }
+.PrivateMessageBox .top-bar #chatButtonUl .fa-pencil {
+  margin-left: -208%;
+}
 .PrivateMessageBox .prvSend {
   margin-bottom: 0;
   height: 39px;
+  border-top: 0.8px solid #F2AE72;
+  border-left: 0;
+}
+.PrivateMessageBox:focus {
+  border: 1px solid #F2AE72;
 }
 .PrivateMessageBox .PrivateMessage {
   width: 100%;
   height: 68%;
   overflow: auto;
-  background-color: #F2E394;
+  background-color: floralwhite;
 }
 .PrivateMessageBox .PrivateMessage p {
   font-size: 0.8em;
@@ -152,4 +188,28 @@ body {
 .PrivateMessageBox .PrivateMessage .Reciepient {
   color: #8C4646;
   font-weight: bold;
+}
+#dialog {
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  position: fixed;
+}
+#dialogClosed {
+  opacity: 0;
+}
+#dialog #button-modal {
+  width: 47%;
+  height: 190px;
+  margin-left: 28%;
+  z-index: 200;
+  background-color: white;
+  margin-top: 14%;
+  border: 2px solid black;
+  box-shadow: 1px 2px 3px 50rem rgba(82, 74, 74, 0.63);
+}
+#dialog #button-modal button {
+  margin-top: 14%;
+  margin-left: 22%;
+  margin-right: -13%;
 }
