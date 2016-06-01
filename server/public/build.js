@@ -9,7 +9,7 @@ var Container = React.createClass({
   displayName: 'Container',
 
   getInitialState: function () {
-    return { logged: false, loggedHeader: false, users: [], chatBoxes: [], chatOpen: false, userMessage: '', PrvMsgData: [], room: false, modal: false, user: '' };
+    return { logged: false, loggedHeader: false, users: [], chatBoxes: [], chatOpen: false, userMessage: '', PrvMsgData: [], room: false, modal: false, user: '', roomUsers: {} };
   },
   componentDidMount: function () {
     var self = this;
@@ -55,7 +55,7 @@ var Container = React.createClass({
 
       if (privateMessage === 'Would You like to Poem with Me' && socket.username === userTo) {
         state.modal = true;
-        state.user = userTo;
+        state.user = from;
         self.setState(state);
 
         console.log('poeom with me happppend ddafkdjasklfjadsklfjasdklfjasd');
@@ -63,6 +63,17 @@ var Container = React.createClass({
         console.log('poemWithMeAccepted-------------------------------------');
       }
       console.log('-------------------- this is updatePrivateCHat');
+      console.log(self.state);
+    });
+
+    socket.on('EnterThePoemRoom', function (message, users) {
+      console.log(message);
+      console.log(users);
+
+      var state = self.state;
+      state.room = true;
+      state.roomUsers = users;
+      self.setState(state);
       console.log(self.state);
     });
   },
@@ -106,17 +117,50 @@ var Container = React.createClass({
     return React.createElement(
       'div',
       null,
-      React.createElement(Modal, { modalClick: this.modalClick, modal: this.state.modal, user: this.state.user }),
-      this.state.loggedHeader ? React.createElement(HeaderContainer, null) : null,
-      this.state.userMessage.length > 1 ? React.createElement(WelcomeContainer, { userMessage: this.state.userMessage }) : null,
-      this.state.logged ? React.createElement(UserList, { users: this.state.users, chatOpen: this.state.chatOpen, logged: this.state.logged, addChatBox: this.addChatBox }) : React.createElement(Username, { logged: this.hasSubmitted }),
+      this.state.room ? React.createElement(Room, { roomUsers: this.state.roomUsers }) : React.createElement(ChatRoom, { modalClick: this.modalClick,
+        modal: this.state.modal,
+        user: this.state.user,
+        loggedHeader: this.state.loggedHeader,
+        userMessage: this.state.userMessage,
+        logged: this.state.logged,
+        users: this.state.users,
+        chatOpen: this.state.chatOpen,
+        addChatBox: this.addChatBox,
+        hasSubmittedlogged: this.hasSubmitted,
+        PrvMsgData: this.state.PrvMsgData,
+        chatBoxes: this.state.chatBoxes,
+        removeBox: this.removeBox
+      })
+    );
+  }
+});
+
+var ChatRoom = React.createClass({
+  displayName: 'ChatRoom',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'ChatRoom' },
+      React.createElement(Modal, { modalClick: this.props.modalClick,
+        modal: this.props.modal,
+        user: this.props.user
+      }),
+      this.props.loggedHeader ? React.createElement(HeaderContainer, null) : null,
+      this.props.userMessage.length > 1 ? React.createElement(WelcomeContainer, { userMessage: this.props.userMessage }) : null,
+      this.props.logged ? React.createElement(UserList, { users: this.props.users,
+        chatOpen: this.props.chatOpen,
+        logged: this.props.logged,
+        addChatBox: this.props.addChatBox }) : React.createElement(Username, { logged: this.props.hasSubmittedlogged }),
       React.createElement(
         'div',
         { id: 'prvBoxarea', className: 'container' },
         React.createElement(
           'div',
           { className: 'row' },
-          this.state.chatOpen && this.state.logged ? React.createElement(PrivateMessageBox, { PrvMsgData: this.state.PrvMsgData, chatBoxes: this.state.chatBoxes, removeBox: this.removeBox }) : null
+          this.props.chatOpen && this.props.logged ? React.createElement(PrivateMessageBox, { PrvMsgData: this.props.PrvMsgData,
+            chatBoxes: this.props.chatBoxes,
+            removeBox: this.props.removeBox }) : null
         )
       )
     );
@@ -414,6 +458,7 @@ var Modal = React.createClass({
 
   clickYes: function () {
     console.log('THe modalllll click worked');
+    socket.emit('chatAccepted', this.props.user, socket.username);
     socket.emit('pm', this.props.user, 'poemWithMeAccepted');
     this.props.modalClick(true);
   },
@@ -442,6 +487,73 @@ var Modal = React.createClass({
   }
 });
 
+// POEM WITH ME WINDOW ***********************************
+// ***********************************************************
+// ***********************************************************
+
+var Room = React.createClass({
+  displayName: 'Room',
+
+  render: function () {
+    console.log(this.props.roomUsers);
+    console.log('--------------------------------------------------------------ROoom componenet');
+    return React.createElement(
+      'div',
+      { id: 'Room' },
+      React.createElement(RoomUser, { user: this.props.roomUsers.user1 }),
+      React.createElement(PoemArea, null),
+      React.createElement(PoemContainer, null)
+    );
+  }
+});
+
+var RoomUser = React.createClass({
+  displayName: 'RoomUser',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'RoomUser' },
+      React.createElement(
+        'h1',
+        null,
+        this.props.user
+      )
+    );
+  }
+});
+
+var PoemArea = React.createClass({
+  displayName: 'PoemArea',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'PoemArea' },
+      React.createElement(
+        'p',
+        null,
+        'This is the Poem Area Willie Shakes'
+      )
+    );
+  }
+});
+
+var PoemContainer = React.createClass({
+  displayName: 'PoemContainer',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'peomContainer' },
+      React.createElement(
+        'p',
+        null,
+        'This is poem container'
+      )
+    );
+  }
+});
 // var ModalButtons = React.createClass({
 //   render: function(){
 //     return (

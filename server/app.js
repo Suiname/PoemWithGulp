@@ -83,8 +83,8 @@ io.sockets.on('connect', function(socket){
     usernames[username.username] = username.username
 
     socket.emit('updateChat', 'Welcome ' + socket.username + ', may inspiration move you brightly, everyday.', username.username)
-    console.log(onlineClients)
-    console.log(usernames)
+    // console.log(onlineClients)
+    // console.log(usernames)
     socket.broadcast.emit('updateUsers', Object.keys(usernames))
     socket.emit('updateUsers', Object.keys(usernames))
   })
@@ -111,20 +111,32 @@ io.sockets.on('connect', function(socket){
     prvMsgDataObject.recipients.push(userTo, socket.username);
 
     PrivateMessageModel.create(prvMsgDataObject, function(err, Messages){
-      console.log('------------------THis is messages-----------------')
-      console.log(Messages)
-      console.log('---------------- This is messages-------------------')
+      // console.log('------------------THis is messages-----------------')
+      // console.log(Messages)
+      // console.log('---------------- This is messages-------------------')
     })
 
-
-
-
+    console.log(onlineClients[userTo])
+      console.log(onlineClients[socket.username])
     io.sockets.connected[onlineClients[userTo]].emit('updatePrivateChat', socket.username, userTo, privateMessage)
     io.sockets.connected[onlineClients[socket.username]].emit('updatePrivateChat', socket.username, userTo, privateMessage)
   })
 
 
-
+   socket.on('chatAccepted', function(sender, reciepant){
+      console.log('---------------------This is chatAccepted-------------')
+      console.log(sender);
+      console.log(reciepant);
+      console.log(onlineClients[sender])
+      console.log(onlineClients[reciepant])
+      var UsersInPoemRoom = {
+        user1: sender,
+        user2: reciepant
+      }
+      console.log('---------------------This is chatAccepted-------------')
+      io.sockets.connected[onlineClients[sender]].emit('EnterThePoemRoom', 'this worked yo', UsersInPoemRoom)
+      io.sockets.connected[onlineClients[reciepant]].emit('EnterThePoemRoom', 'this worked yo', UsersInPoemRoom)
+    })
 
 
 
