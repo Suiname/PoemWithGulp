@@ -138,15 +138,23 @@ io.sockets.on('connect', function(socket){
       io.sockets.connected[onlineClients[reciepant]].emit('EnterThePoemRoom', 'this worked yo', UsersInPoemRoom)
     })
 
+   socket.on('poeming', function(poemAction, users){
+    console.log('-------------------------THis is poemAction')
+    console.log(poemAction)
+    console.log(users)
+    var sender = users.user1;
+    var recipient = users.user2;
+    io.sockets.connected[onlineClients[sender]].emit('updatePoem', poemAction)
+    io.sockets.connected[onlineClients[recipient]].emit('updatePoem', poemAction)
+   })
 
 
 
 
 
-
-socket.on('error', function(error){
-  console.log(error)
-})
+    socket.on('error', function(error){
+      console.log(error)
+    })
 
 })// end of socket connection
 

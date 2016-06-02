@@ -494,14 +494,29 @@ var Modal = React.createClass({
 var Room = React.createClass({
   displayName: 'Room',
 
+  getInitialState: function () {
+    return { finalPoem: '' };
+  },
+  componentDidMount: function () {
+    var self = this;
+    socket.on('updatePoem', function (poeming) {
+      console.log(poeming.poem);
+      var state = self.state;
+      state.finalPoem = poeming.poem;
+      console.log(state);
+      console.log('************************************************************************$*$*$*$**$*$$*$*$*$*$*');
+      self.setState(state);
+      console.log('---^^^^^^^^^^^^^^^^^^^^^THis is poeming');
+    });
+  },
   render: function () {
     console.log(this.props.roomUsers);
     console.log('--------------------------------------------------------------ROoom componenet');
     return React.createElement(
       'div',
       { id: 'Room' },
-      React.createElement(RoomUser, { user: this.props.roomUsers.user1 }),
-      React.createElement(PoemArea, null),
+      React.createElement(RoomUser, { user: this.props.roomUsers }),
+      React.createElement(PoemArea, { poem: this.state.finalPoem }),
       React.createElement(PoemContainer, null)
     );
   }
@@ -510,15 +525,28 @@ var Room = React.createClass({
 var RoomUser = React.createClass({
   displayName: 'RoomUser',
 
+  getInitialState: function () {
+    return { poem: '' };
+  },
+
+  handleTyping: function (event) {
+    var state = this.state;
+    state.poem = event.target.value;
+    socket.emit('poeming', state, this.props.user);
+    this.setState(state);
+  },
   render: function () {
+    console.log(this.props);
+    console.log('--------------------------------gotch RoomUser');
     return React.createElement(
       'div',
       { id: 'RoomUser' },
       React.createElement(
-        'h1',
+        'h4',
         null,
-        this.props.user
-      )
+        this.props.user.user1
+      ),
+      React.createElement('textarea', { type: 'text', placeholder: 'Username Biotch', onChange: this.handleTyping, value: this.state.poem })
     );
   }
 });
@@ -534,6 +562,11 @@ var PoemArea = React.createClass({
         'p',
         null,
         'This is the Poem Area Willie Shakes'
+      ),
+      React.createElement(
+        'textarea',
+        { id: 'poemsArea', value: this.props.poem },
+        this.props.poem
       )
     );
   }

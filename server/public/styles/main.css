@@ -228,9 +228,17 @@ body {
   width: 46%;
   background-color: aliceblue;
   height: 280px;
+  padding: 0.5%;
 }
 #Room #peomContainer {
   float: right;
   background-color: beige;
   width: 25%;
+}
+#poemsArea {
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  margin: 0 auto;
+  overflow-x: hidden;
 }
