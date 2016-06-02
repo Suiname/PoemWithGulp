@@ -515,7 +515,7 @@ var Room = React.createClass({
     return React.createElement(
       'div',
       { id: 'Room' },
-      React.createElement(RoomUser, { user: this.props.roomUsers }),
+      React.createElement(RoomUser, { user: this.props.roomUsers, poem: this.state.finalPoem }),
       React.createElement(PoemArea, { poem: this.state.finalPoem }),
       React.createElement(PoemContainer, null)
     );
@@ -532,16 +532,27 @@ var RoomUser = React.createClass({
   handleTyping: function (event) {
     var state = this.state;
     state.poem = event.target.value;
-    socket.emit('poeming', state, this.props.user);
+    console.log('9999999999999999999999999999999999999999999');
+    console.log(state);
+    console.log(this.props.poem);
+    console.log(socket.username);
+    console.log(this.props.user);
+    console.log('9999999999999999999999999999999999999999999');
+    socket.emit('poeming', state, this.props.user, this.props.poem);
     this.setState(state);
   },
   render: function () {
     console.log(this.props);
+    console.log(this.state);
     console.log('--------------------------------gotch RoomUser');
     return React.createElement(
       'div',
       { id: 'RoomUser' },
-      React.createElement(
+      this.props.user.user1 != socket.username ? React.createElement(
+        'h4',
+        null,
+        this.props.user.user2
+      ) : React.createElement(
         'h4',
         null,
         this.props.user.user1
@@ -563,11 +574,7 @@ var PoemArea = React.createClass({
         null,
         'This is the Poem Area Willie Shakes'
       ),
-      React.createElement(
-        'textarea',
-        { id: 'poemsArea', value: this.props.poem },
-        this.props.poem
-      )
+      React.createElement('textarea', { id: 'poemsArea', value: this.props.poem })
     );
   }
 });

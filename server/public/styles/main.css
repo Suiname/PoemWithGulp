@@ -229,6 +229,9 @@ body {
   background-color: aliceblue;
   height: 280px;
   padding: 0.5%;
+  overflow: auto;
+  resize: none;
+  outline: none;
 }
 #Room #peomContainer {
   float: right;
@@ -240,5 +243,6 @@ body {
   max-width: 100%;
   text-align: center;
   margin: 0 auto;
-  overflow-x: hidden;
+  overflow: auto;
+  resize: none;
 }

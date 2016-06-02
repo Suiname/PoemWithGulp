@@ -439,11 +439,11 @@ var Room = React.createClass({
     })
   },
   render: function(){
-     console.log(this.props.roomUsers)
+    console.log(this.props.roomUsers)
     console.log('--------------------------------------------------------------ROoom componenet')
     return (
       <div id="Room">
-        <RoomUser user={this.props.roomUsers}/>
+        <RoomUser user={this.props.roomUsers} poem={this.state.finalPoem}/>
         <PoemArea poem={this.state.finalPoem}/>
         <PoemContainer/>
       </div>
@@ -460,15 +460,22 @@ var RoomUser = React.createClass({
   handleTyping: function(event){
     var state = this.state;
     state.poem = event.target.value;
-    socket.emit('poeming', state, this.props.user)
+    console.log('9999999999999999999999999999999999999999999')
+    console.log(state)
+    console.log(this.props.poem)
+    console.log(socket.username)
+    console.log(this.props.user)
+    console.log('9999999999999999999999999999999999999999999')
+    socket.emit('poeming', state, this.props.user, this.props.poem)
     this.setState(state);
   },
   render: function(){
     console.log(this.props)
+    console.log(this.state)
     console.log('--------------------------------gotch RoomUser')
     return (
       <div id="RoomUser">
-        <h4>{this.props.user.user1}</h4>
+        {this.props.user.user1 != socket.username ? <h4>{this.props.user.user2}</h4> : <h4>{this.props.user.user1}</h4>}
         <textarea type="text" placeholder="Username Biotch" onChange={this.handleTyping} value={this.state.poem}/>
       </div>
       )
@@ -480,7 +487,7 @@ var PoemArea = React.createClass({
     return (
       <div id="PoemArea">
         <p>This is the Poem Area Willie Shakes</p>
-          <textarea id="poemsArea" value={this.props.poem}>{this.props.poem}</textarea>
+          <textarea id="poemsArea" value={this.props.poem}></textarea>
       </div>
       )
     }

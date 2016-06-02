@@ -138,9 +138,12 @@ io.sockets.on('connect', function(socket){
       io.sockets.connected[onlineClients[reciepant]].emit('EnterThePoemRoom', 'this worked yo', UsersInPoemRoom)
     })
 
-   socket.on('poeming', function(poemAction, users){
+   socket.on('poeming', function(poemAction, users, poemWritten){
     console.log('-------------------------THis is poemAction')
     console.log(poemAction)
+    console.log(poemWritten)
+
+    console.log('----------------------------------------------------------------------this is poemingggn')
     console.log(users)
     var sender = users.user1;
     var recipient = users.user2;
