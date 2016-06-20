@@ -1,4 +1,3 @@
-
 var React = require('react');
 var ReactDOM = require('react-dom')
 var io = require('socket.io-client')
@@ -117,8 +116,8 @@ var Container = React.createClass({
       }
     },
     render: function(){
-      console.log(this.state)
-      console.log('line 18-----------------------------------------------------------------------------------------------------')
+      // console.log(this.state)
+      // console.log('line 18-----------------------------------------------------------------------------------------------------')
       return (
                   <div>
                     {this.state.room ? <Room roomUsers={this.state.roomUsers} /> : <ChatRoom modalClick={this.modalClick}
@@ -211,7 +210,7 @@ var Container = React.createClass({
       var self = this;
       var userBoxes = this.props.chatBoxes.map(function(user, i){
         return   <div className="PrivateMessageBox four columns" key={i}>
-                    <PrivateMessageHeader data={user}                        removeBox={self.props.removeBox}/>
+                    <PrivateMessageHeader data={user} removeBox={self.props.removeBox}/>
                     <PrivateMessageArea   PrvMsgData={self.props.PrvMsgData} data={user}/>
                     <PrivateMessageInput  data={user}/>
                  </div>
@@ -315,8 +314,6 @@ var Container = React.createClass({
     },
     render: function(){
       var user = this.props.data
-      console.log(user)
-      console.log('My cervix is ripening, Run like an antelope my water is breaking what do you do')
       var filteredData = this.props.PrvMsgData.filter(function(data, i){
         console.log(data)
         return data.userTo === user || user === data.from
@@ -424,27 +421,74 @@ var Modal = React.createClass({
 
 var Room = React.createClass({
   getInitialState: function(){
-    return {finalPoem: ''}
+    return {finalPoem: '', userTextArea: '', userTwo: ''}
+  },
+  getUserTextAreaInput: function(userText, userTyping){
+    console.log(userText);
+    var state = this.state;
+    console.log(state)
+    if(this.props.roomUsers.user1 === userTyping){
+      console.log(this.props.roomUsers.user1)
+      console.log(userTyping)
+      console.log(state, 'if hit state')
+      console.log('if hit ------------------------------------------------------------')
+      state.userTextArea = userText;
+      this.setState(state)
+
+    }else {
+      state.userTwo = userText;
+      console.log(state, 'state')
+      console.log('else hit ------------------------------------------------------------')
+      this.setState(state)
+    }
+
+    socket.emit('poeming', this.state.userTwo, this.props.roomUsers, this.state.userTextArea, this.state.finalPoem)
+
   },
   componentDidMount: function(){
     var self = this;
-    socket.on('updatePoem', function(poeming){
-      console.log(poeming.poem)
-      var state = self.state;
-      state.finalPoem = poeming.poem;
-      console.log(state)
-      console.log('************************************************************************$*$*$*$**$*$$*$*$*$*$*')
-      self.setState(state);
-      console.log('---^^^^^^^^^^^^^^^^^^^^^THis is poeming')
+    var state = this.state
+    socket.on('updatePoem', function(userOnePoem, userTwoPoem, finalPoem){
+      console.log(userOnePoem, userTwoPoem)
+      console.log('finall poem =------==--=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=')
+      console.log(finalPoem)
+      console.log(userOnePoem)
+      console.log(userTwoPoem)
+      console.log('this is right before the if/else statement in the room component')
+      var poem = '';
+      if(userOnePoem.length > 1){
+        console.log('this is the if statement in the Room Component')
+        console.log(state)
+        state.finalPoem = state.finalPoem + ' ' + userOnePoem;
+        socket.emit('finalPoem', state.finalPoem)
+        state.userTextArea = ''
+        self.setState(state)
+
+      }
+      else {
+         console.log(state)
+          console.log('this is the else statement in the Room Component')
+
+        state.finalPoem = state.finalPoem + ' ' + userTwoPoem;
+         socket.emit('finalPoem', state.finalPoem)
+        state.userTwo = ''
+        self.setState(state)
+
+      }
+      state.finalPoem = ''
+      console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ updatePoem socket")
     })
+
+
   },
   render: function(){
     console.log(this.props.roomUsers)
+    console.log(this.state)
     console.log('--------------------------------------------------------------ROoom componenet')
     return (
       <div id="Room">
-        <RoomUser user={this.props.roomUsers} poem={this.state.finalPoem}/>
-        <PoemArea poem={this.state.finalPoem}/>
+        <RoomUser user={this.props.roomUsers} poem={this.state.finalPoem} getUserTextAreaInput={this.getUserTextAreaInput}/>
+        <PoemArea poem={this.state.finalPoem} userText={this.state.userTextArea}/>
         <PoemContainer/>
       </div>
      )
@@ -453,30 +497,19 @@ var Room = React.createClass({
 
 
 var RoomUser = React.createClass({
-  getInitialState: function(){
-    return {poem: ''}
-  },
-
   handleTyping: function(event){
-    var state = this.state;
-    state.poem = event.target.value;
-    console.log('9999999999999999999999999999999999999999999')
-    console.log(state)
-    console.log(this.props.poem)
-    console.log(socket.username)
-    console.log(this.props.user)
-    console.log('9999999999999999999999999999999999999999999')
-    socket.emit('poeming', state, this.props.user, this.props.poem)
-    this.setState(state);
+    var user = this.props.user.user1 != socket.username ? this.props.user.user2 : this.props.user.user1;
+    this.props.getUserTextAreaInput(event.target.value, user)
+    console.log('this is handleTyping in the RoomUser component')
   },
   render: function(){
-    console.log(this.props)
     console.log(this.state)
-    console.log('--------------------------------gotch RoomUser')
+    console.log('--------------------------------gotch RoomUser Component')
+
     return (
       <div id="RoomUser">
         {this.props.user.user1 != socket.username ? <h4>{this.props.user.user2}</h4> : <h4>{this.props.user.user1}</h4>}
-        <textarea type="text" placeholder="Username Biotch" onChange={this.handleTyping} value={this.state.poem}/>
+        <textarea type="text" placeholder="Username Biotch" onChange={this.handleTyping} />
       </div>
       )
     }
@@ -486,8 +519,8 @@ var PoemArea = React.createClass({
   render: function(){
     return (
       <div id="PoemArea">
-        <p>This is the Poem Area Willie Shakes</p>
-          <textarea id="poemsArea" value={this.props.poem}></textarea>
+          <h4>This is the Poem Area </h4>
+          <p id="poemsArea" value={this.props.poem}>{this.props.poem}</p>
       </div>
       )
     }

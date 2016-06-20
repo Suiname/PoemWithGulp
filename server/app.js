@@ -1,5 +1,5 @@
 require('dotenv').config();
-var express = require('express'),
+ var express = require('express'),
     app = express(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
@@ -138,20 +138,28 @@ io.sockets.on('connect', function(socket){
       io.sockets.connected[onlineClients[reciepant]].emit('EnterThePoemRoom', 'this worked yo', UsersInPoemRoom)
     })
 
-   socket.on('poeming', function(poemAction, users, poemWritten){
-    console.log('-------------------------THis is poemAction')
-    console.log(poemAction)
-    console.log(poemWritten)
+   socket.on('poeming', function(userOnePoem, users, userTwoPoem, finalPoem){
 
+    console.log(userOnePoem, 'userone poem')
+    console.log(userTwoPoem, 'usertwo poem')
     console.log('----------------------------------------------------------------------this is poemingggn')
     console.log(users)
+
     var sender = users.user1;
     var recipient = users.user2;
-    io.sockets.connected[onlineClients[sender]].emit('updatePoem', poemAction)
-    io.sockets.connected[onlineClients[recipient]].emit('updatePoem', poemAction)
+    io.sockets.connected[onlineClients[sender]].emit('updatePoem', userOnePoem, userTwoPoem, finalPoem)
+    io.sockets.connected[onlineClients[recipient]].emit('updatePoem', userOnePoem, userTwoPoem, finalPoem)
    })
 
+   var poem = ''
+   socket.on('finalPoem', function(finalPoem){
+    poem = ''
+    poem += finalPoem
 
+    console.log(poem)
+    console.log('----this is final poem --------------------------------------------------------------------------------')
+
+   })
 
 
 

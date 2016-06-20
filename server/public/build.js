@@ -1,5 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
 var React = require('react');
 var ReactDOM = require('react-dom');
 var io = require('socket.io-client');
@@ -112,8 +111,8 @@ var Container = React.createClass({
     }
   },
   render: function () {
-    console.log(this.state);
-    console.log('line 18-----------------------------------------------------------------------------------------------------');
+    // console.log(this.state)
+    // console.log('line 18-----------------------------------------------------------------------------------------------------')
     return React.createElement(
       'div',
       null,
@@ -351,8 +350,6 @@ var PrivateMessageArea = React.createClass({
   },
   render: function () {
     var user = this.props.data;
-    console.log(user);
-    console.log('My cervix is ripening, Run like an antelope my water is breaking what do you do');
     var filteredData = this.props.PrvMsgData.filter(function (data, i) {
       console.log(data);
       return data.userTo === user || user === data.from;
@@ -495,28 +492,68 @@ var Room = React.createClass({
   displayName: 'Room',
 
   getInitialState: function () {
-    return { finalPoem: '' };
+    return { finalPoem: '', userTextArea: '', userTwo: '' };
+  },
+  getUserTextAreaInput: function (userText, userTyping) {
+    console.log(userText);
+    var state = this.state;
+    console.log(state);
+    if (this.props.roomUsers.user1 === userTyping) {
+      console.log(this.props.roomUsers.user1);
+      console.log(userTyping);
+      console.log(state, 'if hit state');
+      console.log('if hit ------------------------------------------------------------');
+      state.userTextArea = userText;
+      this.setState(state);
+    } else {
+      state.userTwo = userText;
+      console.log(state, 'state');
+      console.log('else hit ------------------------------------------------------------');
+      this.setState(state);
+    }
+
+    socket.emit('poeming', this.state.userTwo, this.props.roomUsers, this.state.userTextArea, this.state.finalPoem);
   },
   componentDidMount: function () {
     var self = this;
-    socket.on('updatePoem', function (poeming) {
-      console.log(poeming.poem);
-      var state = self.state;
-      state.finalPoem = poeming.poem;
-      console.log(state);
-      console.log('************************************************************************$*$*$*$**$*$$*$*$*$*$*');
-      self.setState(state);
-      console.log('---^^^^^^^^^^^^^^^^^^^^^THis is poeming');
+    var state = this.state;
+    socket.on('updatePoem', function (userOnePoem, userTwoPoem, finalPoem) {
+      console.log(userOnePoem, userTwoPoem);
+      console.log('finall poem =------==--=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=');
+      console.log(finalPoem);
+      console.log(userOnePoem);
+      console.log(userTwoPoem);
+      console.log('this is right before the if/else statement in the room component');
+      var poem = '';
+      if (userOnePoem.length > 1) {
+        console.log('this is the if statement in the Room Component');
+        console.log(state);
+        state.finalPoem = state.finalPoem + ' ' + userOnePoem;
+        socket.emit('finalPoem', state.finalPoem);
+        state.userTextArea = '';
+        self.setState(state);
+      } else {
+        console.log(state);
+        console.log('this is the else statement in the Room Component');
+
+        state.finalPoem = state.finalPoem + ' ' + userTwoPoem;
+        socket.emit('finalPoem', state.finalPoem);
+        state.userTwo = '';
+        self.setState(state);
+      }
+      state.finalPoem = '';
+      console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ updatePoem socket");
     });
   },
   render: function () {
     console.log(this.props.roomUsers);
+    console.log(this.state);
     console.log('--------------------------------------------------------------ROoom componenet');
     return React.createElement(
       'div',
       { id: 'Room' },
-      React.createElement(RoomUser, { user: this.props.roomUsers, poem: this.state.finalPoem }),
-      React.createElement(PoemArea, { poem: this.state.finalPoem }),
+      React.createElement(RoomUser, { user: this.props.roomUsers, poem: this.state.finalPoem, getUserTextAreaInput: this.getUserTextAreaInput }),
+      React.createElement(PoemArea, { poem: this.state.finalPoem, userText: this.state.userTextArea }),
       React.createElement(PoemContainer, null)
     );
   }
@@ -525,26 +562,15 @@ var Room = React.createClass({
 var RoomUser = React.createClass({
   displayName: 'RoomUser',
 
-  getInitialState: function () {
-    return { poem: '' };
-  },
-
   handleTyping: function (event) {
-    var state = this.state;
-    state.poem = event.target.value;
-    console.log('9999999999999999999999999999999999999999999');
-    console.log(state);
-    console.log(this.props.poem);
-    console.log(socket.username);
-    console.log(this.props.user);
-    console.log('9999999999999999999999999999999999999999999');
-    socket.emit('poeming', state, this.props.user, this.props.poem);
-    this.setState(state);
+    var user = this.props.user.user1 != socket.username ? this.props.user.user2 : this.props.user.user1;
+    this.props.getUserTextAreaInput(event.target.value, user);
+    console.log('this is handleTyping in the RoomUser component');
   },
   render: function () {
-    console.log(this.props);
     console.log(this.state);
-    console.log('--------------------------------gotch RoomUser');
+    console.log('--------------------------------gotch RoomUser Component');
+
     return React.createElement(
       'div',
       { id: 'RoomUser' },
@@ -557,7 +583,7 @@ var RoomUser = React.createClass({
         null,
         this.props.user.user1
       ),
-      React.createElement('textarea', { type: 'text', placeholder: 'Username Biotch', onChange: this.handleTyping, value: this.state.poem })
+      React.createElement('textarea', { type: 'text', placeholder: 'Username Biotch', onChange: this.handleTyping })
     );
   }
 });
@@ -570,11 +596,15 @@ var PoemArea = React.createClass({
       'div',
       { id: 'PoemArea' },
       React.createElement(
-        'p',
+        'h4',
         null,
-        'This is the Poem Area Willie Shakes'
+        'This is the Poem Area '
       ),
-      React.createElement('textarea', { id: 'poemsArea', value: this.props.poem })
+      React.createElement(
+        'p',
+        { id: 'poemsArea', value: this.props.poem },
+        this.props.poem
+      )
     );
   }
 });
