@@ -499,7 +499,7 @@ var Room = React.createClass({
 var RoomUser = React.createClass({
   handleTyping: function(event){
     var user = this.props.user.user1 != socket.username ? this.props.user.user2 : this.props.user.user1;
-    this.props.getUserTextAreaInput(event.target.value, user)
+    // this.props.getUserTextAreaInput(event.target.value, user)
     console.log('this is handleTyping in the RoomUser component')
   },
   render: function(){
