@@ -8,8 +8,24 @@ require('dotenv').config();
     cors = require('cors'),
     path = require('path');
 
+import config from 'config'
+import logger from 'morgan'
 
+// Webpack Requirements
+import webpack from 'webpack';
+import packconfig from '../webpack.config.dev';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
 
+const compiler = webpack(packconfig);
+
+console.log(`Running in process: ${process.env.NODE_ENV}`);
+
+if (process.env.NODE_ENV !== 'production') {
+  app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: packconfig.output.publicPath }));
+  app.use(webpackHotMiddleware(compiler));
+  app.use(logger('dev'));
+}
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json());
@@ -20,7 +36,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 require('./db/db')
 
 // Requiring Models
-PrivateMessageModel = require('./models/PrivateMessageModel')
+var PrivateMessageModel = require('./models/PrivateMessageModel')
 
 // Routes
 app.get('/', function(req, res){
@@ -175,4 +191,3 @@ io.sockets.on('connect', function(socket){
 server.listen(8080, function(){
   console.log('The server is listening on port 8080')
 })
-
