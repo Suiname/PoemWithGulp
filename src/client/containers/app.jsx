@@ -1,28 +1,28 @@
 import React from 'react';
 import io from 'socket.io-client';
 var socket = io.connect();
+import LoginBox from './login.jsx';
 
 class App extends React.Component {
   constructor() {
-    super()
-    this.state = {logged: false, loggedHeader: false, users: [], chatBoxes: [], chatOpen: false, userMessage: '', PrvMsgData: [], room: false, modal: false, user: '', roomUsers: {}, txtvalue: ''};
-    this.textType = this.textType.bind(this);
+    super();
+    this.state = { logged: false, loggedHeader: false, users: [], chatBoxes: [], chatOpen: false, userMessage: '', PrvMsgData: [], room: false, modal: false, user: '', roomUsers: {}, txtvalue: '' };
   }
   componentDidMount(){
     socket.on('updateUsers', (data) => {
       this.setState((state) => {
         state.users = data;
         return state;
-      })
+      });
     });
 
     socket.on('updateChat', (data, username) => {
       this.setState((state) => {
         socket.username = username;
         state.userMessage = data;
-        return state
-      })
-    })
+        return state;
+      });
+    });
 
     socket.on('updatePrivateChat', function(from, userTo, privateMessage){
       console.log(from)
@@ -81,30 +81,11 @@ class App extends React.Component {
 
     })
   }
-  textType(e){
-    let value = e.target.value;
-    this.setState((state) => {
-      state.txtvalue = value;
-      socket.emit(value);
-      return state;
-    })
-  }
   render(){
     return(
-      <div className="row">
-        <div className="twelve columns">This is a chatroom</div>
-        <div className="six columns">
-          <form>
-            <input type="textarea" value={this.state.txtvalue} onChange={this.textType}/>
-          </form>
-        </div>
-        <div className="six columns">
-          <p>{this.state.txtvalue}</p>
-        </div>
-
+      <div className="container">
+        <LoginBox />
       </div>
-
-
     )
   }
 }
