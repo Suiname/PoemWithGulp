@@ -1,0 +1,23 @@
+{
+  "parser"  : "babel-eslint",
+  "extends" : [
+    "airbnb"
+  ],
+  "plugins": [
+    "babel"
+  ],
+  "env"     : {
+    "browser" : true
+  },
+  "globals" : {
+    "$": false,
+  },
+  "rules": {
+    "semi" : [2, "always"],
+    "max-len": [2, 250, 2],
+    "generator-star-spacing": 0,
+    "babel/generator-star-spacing": 1,
+    "camelcase": "off",
+    "no-use-before-define": 0,
+  }
+}

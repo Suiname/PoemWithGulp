@@ -85,7 +85,9 @@ io.sockets.on('connect', function(socket){
 
 
   })
-
+  socket.on('listusers', () => {
+    socket.broadcast.emit('ListUsers', Object.keys(usernames));
+  });
 
   socket.on('adduser', function(username){
     console.log(username.username)
