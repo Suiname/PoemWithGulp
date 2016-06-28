@@ -2,92 +2,78 @@ import React from 'react';
 import io from 'socket.io-client';
 var socket = io.connect();
 import LoginBox from './login.jsx';
+import Chatroom from './chatroom.jsx';
 
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { logged: false, loggedHeader: false, users: [], chatBoxes: [], chatOpen: false, userMessage: '', PrvMsgData: [], room: false, modal: false, user: '', roomUsers: {}, txtvalue: '' };
+    this.state = { txtvalue: '', userList:[], userMessage:'', loggedIn: false, chatlog: [], chatWindow: '' };
+    this.textType = this.textType.bind(this);
+    this.submitUser = this.submitUser.bind(this);
+    this.chatType = this.chatType.bind(this);
+    this.submitChat = this.submitChat.bind(this);
   }
   componentDidMount(){
-    socket.on('updateUsers', (data) => {
-      this.setState((state) => {
-        state.users = data;
-        return state;
-      });
-    });
-
     socket.on('updateChat', (data, username) => {
       this.setState((state) => {
-        socket.username = username;
         state.userMessage = data;
         return state;
       });
     });
-
-    socket.on('updatePrivateChat', function(from, userTo, privateMessage){
-      console.log(from)
-      console.log(userTo)
-      console.log(privateMessage)
+    socket.on('updateUsers', (data) => {
       this.setState((state) => {
-        if (privateMessage != 'poemWithMeAccepted'){
-               state.PrvMsgData.push({
-                from: from,
-                userTo: userTo,
-                privateMessage: privateMessage
-              })
-              return state;
-           }
-
-
-        if(state.chatBoxes.indexOf(userTo) > -1 && privateMessage != 'poemWithMeAccepted' || state.chatBoxes.indexOf(from) > -1 && privateMessage != 'poemWithMeAccepted'){
-          state.chatOpen = true;
-          console.log(userTo);
-          console.log('if happened----------------------------------------------------------------------------------------------------------------')
-          return state;
-        }
-        else if(privateMessage != 'poemWithMeAccepted'){
-          state.chatOpen = true;
-          state.chatBoxes.push(from)
-          console.log(from)
-          console.log('else happened --------------------------------------------------------------------------------------------------------------')
-          return state;
-        }
-
-        if(privateMessage === 'Would You like to Poem with Me' && socket.username === userTo ){
-          state.modal = true;
-          state.user = from;
-
-          console.log('poeom with me happppend ddafkdjasklfjadsklfjasdklfjasd')
-          return state;
-        }
-        else if (privateMessage === 'poemWithMeAccepted'){
-          console.log('poemWithMeAccepted-------------------------------------');
-        }
-      })
-
-    })
-
-
-    socket.on('EnterThePoemRoom', function(message, users){
-      console.log(message)
-      console.log(users)
-
-      var state = self.state;
-      state.room = true;
-      state.roomUsers = users;
-      self.setState(state);
-      console.log(self.state);
-
-
-    })
+        state.userList = data;
+        return state;
+      });
+    });
+    socket.on('ListUsers', (data) => {
+      this.setState((state) => {
+        state.userList = data;
+        return state;
+      });
+    });
+    socket.emit('listusers');
+  }
+  textType(e){
+    const value = e.target.value;
+    this.setState((state) => {
+      state.txtvalue = value;
+      return state;
+    });
+  }
+  chatType(e){
+    const value = e.target.value;
+    this.setState((state) => {
+      state.chatWindow = value;
+      return state;
+    });
+  }
+  submitUser(e){
+    e.preventDefault();
+    socket.emit('adduser', { username:this.state.txtvalue });
+    this.setState((state) => {
+      state.loggedIn = true;
+    });
+  }
+  submitChat(e){
+    e.preventDefault();
+    socket.emit(this.state.chatWindow);
+    this.setState((state) => {
+      state.chatlog.push(state.chatWindow);
+      state.chatWindow = '';
+      return state;
+    });
   }
   render(){
-    return(
+    return (
       <div className="container">
-        <LoginBox />
+        {this.state.loggedIn ?
+          <Chatroom chatlog={this.state.chatlog} chatWindow={this.state.chatWindow} chatType={this.chatType} submitChat={this.submitChat} /> :
+          <LoginBox login={this.submitUser} txtvalue={this.state.txtvalue} textType={this.textType} />
+        }
       </div>
-    )
+    );
   }
 }
 
-export default App
+export default App;
