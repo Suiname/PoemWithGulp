@@ -32,6 +32,10 @@ class App extends React.Component {
         return state;
       });
     });
+    socket.on('updateChat', (data, username) => {
+      console.log("Chat data: ", data);
+      console.log("Chat username: ", username);
+    });
     socket.emit('listusers');
   }
   textType(e){
