@@ -11,7 +11,12 @@ class Modal extends React.Component {
           <div className="three columns modalBox">
             <div className="modalHeader twelve columns">{recipient}</div>
             <div className="privateMessage twelve columns">
-              <input type="textarea" className="pmTextArea twelve columns" />
+              <div className="pmTextArea twelve columns">
+                {this.props.pms[recipient] ?
+                  this.props.pms[recipient] :
+                  null}
+              </div>
+              <input type="textarea" id={`input.${recipient}`} className="pmTextbox twelve columns" onKeyPress={this.props.pmSubmit} />
             </div>
           </div>
         )}
@@ -22,6 +27,8 @@ class Modal extends React.Component {
 
 Modal.propTypes = {
   recipients: PropTypes.array,
+  pms: PropTypes.object,
+  pmSubmit: PropTypes.func,
 };
 
 export default Modal;
