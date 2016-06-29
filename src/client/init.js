@@ -1,5 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import App from './containers/app.jsx';
+import Login from './containers/login.jsx';
 
-render((<App />), document.getElementById('container'));
+render((<Login />), document.getElementById('container'));
