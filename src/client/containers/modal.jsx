@@ -1,6 +1,12 @@
 import React, { PropTypes } from 'react';
 
 class Modal extends React.Component {
+  componentDidUpdate() {
+    if (this.props.recipients.length > 0 && this.props.lastpm) {
+      const objDiv = document.getElementById(`pmtext.${this.props.lastpm}`);
+      objDiv.scrollTop = objDiv.scrollHeight;
+    }
+  }
   render() {
     if (this.props.recipients.length === 0) {
       return null;
@@ -11,9 +17,9 @@ class Modal extends React.Component {
           <div className="three columns modalBox">
             <div className="modalHeader twelve columns">{recipient}</div>
             <div className="privateMessage twelve columns">
-              <div className="pmTextArea twelve columns">
+              <div id={`pmtext.${recipient}`} className="pmTextArea twelve columns">
                 {this.props.pms[recipient] ?
-                  this.props.pms[recipient] :
+                  this.props.pms[recipient].map((message) => <p>{message}</p>) :
                   null}
               </div>
               <input type="textarea" id={`input.${recipient}`} className="pmTextbox twelve columns" onKeyPress={this.props.pmSubmit} />
@@ -29,6 +35,7 @@ Modal.propTypes = {
   recipients: PropTypes.array,
   pms: PropTypes.object,
   pmSubmit: PropTypes.func,
+  lastpm: PropTypes.string,
 };
 
 export default Modal;

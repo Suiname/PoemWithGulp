@@ -8,7 +8,7 @@ import Modal from './modal.jsx';
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { txtvalue: '', userList: [], userMessage: '', loggedIn: false, chatlog: [], chatWindow: '', username: '', recipients: [], pms: {} };
+    this.state = { txtvalue: '', userList: [], userMessage: '', loggedIn: false, chatlog: [], chatWindow: '', username: '', recipients: [], pms: {}, lastpm: '' };
     this.textType = this.textType.bind(this);
     this.submitUser = this.submitUser.bind(this);
     this.chatType = this.chatType.bind(this);
@@ -35,14 +35,25 @@ class App extends React.Component {
         return state;
       });
     });
-    socket.on('updatePrivateChat', (data1, data2, data3) => {
+    socket.on('updatePrivateChat', (fromUser, toUser, message) => {
       this.setState((state) => {
-        console.log('state.pms: ', state.pms);
-        console.log('state.pms[data1]: ', state.pms[data2]);
-        if (state.pms[data2] === undefined) {
-          state.pms[data2] = [`${data1}: ${data3}`];
-        } else {
-          state.pms[data2].push(`${data1}: ${data3}`);
+        if (fromUser === state.username) { // pm is from current user
+          if (state.pms[toUser] === undefined) {
+            state.pms[toUser] = [`${toUser}: ${message}`];
+          } else {
+            state.pms[toUser].push(`${toUser}: ${message}`);
+          }
+          state.lastpm = toUser;
+        } else { // pm is to current user
+          if (!state.recipients.includes(fromUser)) {
+            state.recipients.push(fromUser);
+          }
+          if (state.pms[fromUser] === undefined) {
+            state.pms[fromUser] = [`${fromUser}: ${message}`];
+          } else {
+            state.pms[fromUser].push(`${fromUser}: ${message}`);
+          }
+          state.lastpm = fromUser;
         }
         return state;
       });
@@ -92,12 +103,9 @@ class App extends React.Component {
   pmSubmit(e) {
     if (e.key === 'Enter') {
       const value = e.target.value;
+      const sender = e.target.id.split('.')[1];
       e.target.value = '';
-      socket.emit('pm', e.target.id.split('.')[1], value);
-      // this.setState((state) => {
-      //   state.pms
-      //   return state;
-      // })
+      socket.emit('pm', sender, value);
     }
   }
   render() {
@@ -107,7 +115,7 @@ class App extends React.Component {
           <Chatroom chatlog={this.state.chatlog} chatWindow={this.state.chatWindow} chatType={this.chatType} submitChat={this.submitChat} userList={this.state.userList} openModal={this.openModal} /> :
           <LoginBox username={this.state.username} login={this.submitUser} txtvalue={this.state.txtvalue} textType={this.textType} />
         }
-        <Modal recipients={this.state.recipients} pms={this.state.pms} pmSubmit={this.pmSubmit} />
+        <Modal recipients={this.state.recipients} pms={this.state.pms} pmSubmit={this.pmSubmit} lastpm={this.state.lastpm} />
       </div>
     );
   }
