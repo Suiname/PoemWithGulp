@@ -111,7 +111,6 @@ class App extends React.Component {
     if (e.key === 'Enter') {
       const value = e.target.value;
       const sender = e.target.id.split('.')[1];
-      console.log(value,sender);
       e.target.value = '';
       socket.emit('pm', sender, value);
     }
