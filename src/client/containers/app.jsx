@@ -8,7 +8,7 @@ import Modal from './modal.jsx';
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { txtvalue: '', userList: [], userMessage: '', loggedIn: false, chatlog: [], chatWindow: '', username: '', recipients: [], pms: {}, lastpm: '' };
+    this.state = { txtvalue: '', userList: [], userMessage: '', loggedIn: false, chatlog: [], chatWindow: '', username: '', recipients: [], pms: {}, lastpm: '', chooseToPoem: false, waiting: false };
     this.textType = this.textType.bind(this);
     this.submitUser = this.submitUser.bind(this);
     this.chatType = this.chatType.bind(this);
@@ -40,9 +40,9 @@ class App extends React.Component {
       this.setState((state) => {
         if (fromUser === state.username) { // pm is from current user
           if (state.pms[toUser] === undefined) {
-            state.pms[toUser] = [`${toUser}: ${message}`];
+            state.pms[toUser] = [`${fromUser}: ${message}`];
           } else {
-            state.pms[toUser].push(`${toUser}: ${message}`);
+            state.pms[toUser].push(`${fromUser}: ${message}`);
           }
           state.lastpm = toUser;
         } else { // pm is to current user
@@ -59,7 +59,31 @@ class App extends React.Component {
         return state;
       });
     });
+    socket.on('poem?', (sender, recipient) => {
+      console.log('poem? sent from: ', sender);
+      console.log('poem? sent to: ', recipient);
+      console.log('sender: ', sender);
+      console.log('this.state.username:', this.state.username);
+      console.log('sender === this.state.username: ', (sender === this.state.username))
+      // if (sender === this.state.username) {
+      //   console.log('"sender === this.state.username"');
+      //   this.setState((state) => {
+      //     state.waiting = true;
+      //     return state;
+      //   });
+      // } else if (recipient === this.state.username) {
+      //   console.log('recipient === this.state.username');
+      //   this.setState((state) => {
+      //     state.chooseToPoem = true;
+      //     return state;
+      //   });
+      // }
+    });
     socket.emit('listusers');
+  }
+  componentDidUpdate() {
+    console.log('this.state.username: ', this.state.username);
+    console.log('this.state.loggedIn: ', this.state.loggedIn);
   }
   textType(e) {
     const value = e.target.value;
@@ -86,17 +110,20 @@ class App extends React.Component {
     });
   }
   submitUser(e) {
+    console.log("submitUser called");
     e.preventDefault();
-    socket.emit('adduser', { username: this.state.txtvalue });
+    const username = this.state.txtvalue;
     this.setState((state) => {
-      state.username = state.txtvalue;
+      state.username = username;
       state.loggedIn = true;
+      socket.emit('adduser', { username });
+      return state;
     });
   }
   submitChat(e) {
     e.preventDefault();
     this.setState((state) => {
-      socket.emit('submitChat', state.chatWindow, this.state.username);
+      socket.emit('submitChat', state.chatWindow, state.username);
       state.chatWindow = '';
       return state;
     });
@@ -111,6 +138,9 @@ class App extends React.Component {
   }
   askToPoem(e) {
     e.preventDefault();
+    const recipient = e.target.id.split('.')[1];
+    const sender = this.state.username;
+    socket.emit('invite', recipient, sender);
     // implement later
   }
   render() {
@@ -121,6 +151,10 @@ class App extends React.Component {
           <LoginBox username={this.state.username} login={this.submitUser} txtvalue={this.state.txtvalue} textType={this.textType} />
         }
         <Modal recipients={this.state.recipients} pms={this.state.pms} pmSubmit={this.pmSubmit} lastpm={this.state.lastpm} askToPoem={this.askToPoem} />
+        {this.state.waiting || this.state.chooseToPoem ?
+          <div><h1>CHOOSE TO POEM</h1></div> :
+          null
+        }
       </div>
     );
   }

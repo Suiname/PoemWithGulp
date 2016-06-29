@@ -143,6 +143,11 @@ io.sockets.on('connect', function(socket){
     io.sockets.connected[onlineClients[socket.username]].emit('updatePrivateChat', socket.username, userTo, privateMessage)
   })
 
+  socket.on('invite', (recipient, sender) => {
+    console.log('online clients: ', onlineClients);
+    console.log('invite received');
+    socket.broadcast.emit('poem?', sender, recipient);
+  });
 
    socket.on('chatAccepted', function(sender, reciepant){
       console.log('---------------------This is chatAccepted-------------')

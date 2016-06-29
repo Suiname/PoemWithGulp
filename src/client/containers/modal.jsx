@@ -15,7 +15,7 @@ class Modal extends React.Component {
       <div className="row" id="modalContainer">
         {this.props.recipients.map((recipient) =>
           <div className="three columns modalBox">
-            <div className="modalHeader twelve columns">{recipient}<i className="fa fa-pencil u-pull-right" aria-hidden="true" onClick={this.props.askToPoem}></i></div>
+            <div className="modalHeader twelve columns">{recipient}<i id={`askToPoem.${recipient}`} className="fa fa-pencil u-pull-right" aria-hidden="true" onClick={this.props.askToPoem}></i></div>
             <div className="privateMessage twelve columns">
               <div id={`pmtext.${recipient}`} className="pmTextArea twelve columns">
                 {this.props.pms[recipient] ?
