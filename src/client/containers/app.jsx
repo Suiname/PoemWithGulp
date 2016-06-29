@@ -7,19 +7,19 @@ import Chatroom from './chatroom.jsx';
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { txtvalue: '', userList:[], userMessage:'', loggedIn: false, chatlog: [], chatWindow: '' };
+    this.state = { txtvalue: '', userList: [], userMessage: '', loggedIn: false, chatlog: [], chatWindow: '', username: '' };
     this.textType = this.textType.bind(this);
     this.submitUser = this.submitUser.bind(this);
     this.chatType = this.chatType.bind(this);
     this.submitChat = this.submitChat.bind(this);
   }
-  componentDidMount(){
-    socket.on('updateChat', (data, username) => {
-      this.setState((state) => {
-        state.userMessage = data;
-        return state;
-      });
-    });
+  componentDidMount() {
+    // socket.on('updateChat', (data) => {
+    //   this.setState((state) => {
+    //     state.userMessage = data;
+    //     return state;
+    //   });
+    // });
     socket.on('updateUsers', (data) => {
       this.setState((state) => {
         state.userList = data;
@@ -32,48 +32,52 @@ class App extends React.Component {
         return state;
       });
     });
-    socket.on('updateChat', (data, username) => {
-      console.log("Chat data: ", data);
-      console.log("Chat username: ", username);
+    socket.on('submitChat', (data, username) => {
+      console.log(data);
+      console.log(username);
+      this.setState((state) => {
+        state.chatlog.push(`${username}: ${data}`);
+        return state;
+      });
     });
     socket.emit('listusers');
   }
-  textType(e){
+  textType(e) {
     const value = e.target.value;
     this.setState((state) => {
       state.txtvalue = value;
       return state;
     });
   }
-  chatType(e){
+  chatType(e) {
     const value = e.target.value;
     this.setState((state) => {
       state.chatWindow = value;
       return state;
     });
   }
-  submitUser(e){
+  submitUser(e) {
     e.preventDefault();
-    socket.emit('adduser', { username:this.state.txtvalue });
+    socket.emit('adduser', { username: this.state.txtvalue });
     this.setState((state) => {
+      state.username = state.txtvalue;
       state.loggedIn = true;
     });
   }
-  submitChat(e){
+  submitChat(e) {
     e.preventDefault();
-    socket.emit(this.state.chatWindow);
     this.setState((state) => {
-      state.chatlog.push(state.chatWindow);
+      socket.emit('submitChat', state.chatWindow, this.state.username);
       state.chatWindow = '';
       return state;
     });
   }
-  render(){
+  render() {
     return (
       <div className="container">
         {this.state.loggedIn ?
-          <Chatroom chatlog={this.state.chatlog} chatWindow={this.state.chatWindow} chatType={this.chatType} submitChat={this.submitChat} /> :
-          <LoginBox login={this.submitUser} txtvalue={this.state.txtvalue} textType={this.textType} />
+          <Chatroom chatlog={this.state.chatlog} chatWindow={this.state.chatWindow} chatType={this.chatType} submitChat={this.submitChat} userList={this.state.userList} /> :
+          <LoginBox username={this.state.username} login={this.submitUser} txtvalue={this.state.txtvalue} textType={this.textType} />
         }
       </div>
     );

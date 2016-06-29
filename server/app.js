@@ -88,6 +88,9 @@ io.sockets.on('connect', function(socket){
   socket.on('listusers', () => {
     socket.broadcast.emit('ListUsers', Object.keys(usernames));
   });
+  socket.on('submitChat', (data, username) => {
+    io.sockets.emit('submitChat', data, username);
+  });
 
   socket.on('adduser', function(username){
     console.log(username.username)

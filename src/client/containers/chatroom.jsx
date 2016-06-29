@@ -1,17 +1,21 @@
 import React from 'react';
 
 class Chatroom extends React.Component {
-  constructor(props) {
-    super(props);
+  componentDidUpdate() {
+    const objDiv = document.getElementById('chatbox');
+    objDiv.scrollTop = objDiv.scrollHeight;
   }
-  render(){
+  render() {
+    if (!this.props.userList) {
+      return null;
+    }
     return (
       <div className="row">
         <div className="twelve columns">
-          <div className="six columns">{this.props.chatlog.map((chat) => {
-            return <p>{chat}</p>;
-          })}</div>
-          <div className="six columns">
+          <div id="chatbox" className="twelve columns">{this.props.chatlog.map((chat) =>
+            <p>{chat}</p>
+          )}</div>
+          <div className="twelve columns">
             <form>
               <input type="textarea" value={this.props.chatWindow} onChange={this.props.chatType} />
               <button onClick={this.props.submitChat}>Chat</button>
@@ -24,10 +28,11 @@ class Chatroom extends React.Component {
 }
 
 Chatroom.propTypes = {
-  chatlog: React.PropTypes.string,
+  chatlog: React.PropTypes.array,
   chatWindow: React.PropTypes.string,
   chatType: React.PropTypes.func,
   submitChat: React.PropTypes.func,
+  userList: React.PropTypes.array,
 };
 
 export default Chatroom;

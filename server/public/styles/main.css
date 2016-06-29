@@ -14,6 +14,12 @@ body {
   margin-right: 40%;
   position: fixed;
 }
+#chatbox{
+  background-color: rgb(252, 252, 252);
+  height: 350px;
+  width: 500px;
+  overflow: scroll;
+}
 #main-page-header {
   background-color: #F2AE72;
 }

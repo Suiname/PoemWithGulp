@@ -1,11 +1,6 @@
 import React, { PropTypes } from 'react';
-import io from 'socket.io-client';
-var socket = io.connect();
 
 class LoginBox extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     return (
       <div className="row">
@@ -22,9 +17,10 @@ class LoginBox extends React.Component {
 }
 
 LoginBox.propTypes = {
-  txtvalue: React.PropTypes.string,
-  textType: React.PropTypes.func,
-  login: React.PropTypes.func,
+  txtvalue: PropTypes.string,
+  textType: PropTypes.func,
+  login: PropTypes.func,
+  username: PropTypes.string,
 };
 
 export default LoginBox;
