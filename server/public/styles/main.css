@@ -16,9 +16,21 @@ body {
 }
 #chatbox{
   background-color: rgb(252, 252, 252);
-  height: 350px;
-  width: 500px;
+  height: 500px;
   overflow: scroll;
+}
+#userlistBox{
+  background-color: rgb(252, 252, 252);
+  max-height: 300px;
+  padding: 5px;
+  overflow: scroll;
+}
+.userlistHeader{
+  background-color: rgb(0, 0, 0);
+  color: rgb(105, 24, 1);
+}
+.usernameBox{
+  min-height: 50px;
 }
 #main-page-header {
   background-color: #F2AE72;

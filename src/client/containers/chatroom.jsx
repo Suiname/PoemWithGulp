@@ -11,16 +11,24 @@ class Chatroom extends React.Component {
     }
     return (
       <div className="row">
-        <div className="twelve columns">
-          <div id="chatbox" className="twelve columns">{this.props.chatlog.map((chat) =>
+        <div className="six columns">
+          <div id="chatbox">{this.props.chatlog.map((chat) =>
             <p>{chat}</p>
           )}</div>
-          <div className="twelve columns">
+          <div>
             <form>
               <input type="textarea" value={this.props.chatWindow} onChange={this.props.chatType} />
               <button onClick={this.props.submitChat}>Chat</button>
             </form>
           </div>
+        </div>
+        <div id="userlistBox" className="six columns">
+          <div className="userlistHeader">Users</div>
+          {this.props.userList.map((user) =>
+            <div className="usernameBox">
+              {user}<div className="u-pull-right"><button>Message Me</button></div>
+            </div>
+          )}
         </div>
       </div>
     );

@@ -1,8 +1,9 @@
 import React from 'react';
 import io from 'socket.io-client';
-var socket = io.connect();
+const socket = io.connect();
 import LoginBox from './login.jsx';
 import Chatroom from './chatroom.jsx';
+import Modal from './modal.jsx';
 
 class App extends React.Component {
   constructor() {
@@ -33,8 +34,6 @@ class App extends React.Component {
       });
     });
     socket.on('submitChat', (data, username) => {
-      console.log(data);
-      console.log(username);
       this.setState((state) => {
         state.chatlog.push(`${username}: ${data}`);
         return state;
@@ -79,6 +78,7 @@ class App extends React.Component {
           <Chatroom chatlog={this.state.chatlog} chatWindow={this.state.chatWindow} chatType={this.chatType} submitChat={this.submitChat} userList={this.state.userList} /> :
           <LoginBox username={this.state.username} login={this.submitUser} txtvalue={this.state.txtvalue} textType={this.textType} />
         }
+        <Modal />
       </div>
     );
   }
