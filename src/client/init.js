@@ -1,5 +1,5 @@
-import React from 'react'
+import React from 'react';
 import { render } from 'react-dom';
-import App from './containers/app.jsx'
+import App from './containers/app.jsx';
 
-render((<App />),document.getElementById('container'))
+render((<App />), document.getElementById('container'));

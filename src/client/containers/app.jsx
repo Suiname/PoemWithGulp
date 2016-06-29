@@ -15,6 +15,7 @@ class App extends React.Component {
     this.submitChat = this.submitChat.bind(this);
     this.openModal = this.openModal.bind(this);
     this.pmSubmit = this.pmSubmit.bind(this);
+    this.askToPoem = this.askToPoem.bind(this);
   }
   componentDidMount() {
     socket.on('updateUsers', (data) => {
@@ -108,6 +109,10 @@ class App extends React.Component {
       socket.emit('pm', sender, value);
     }
   }
+  askToPoem(e) {
+    e.preventDefault();
+    // implement later
+  }
   render() {
     return (
       <div className="container">
@@ -115,7 +120,7 @@ class App extends React.Component {
           <Chatroom chatlog={this.state.chatlog} chatWindow={this.state.chatWindow} chatType={this.chatType} submitChat={this.submitChat} userList={this.state.userList} openModal={this.openModal} /> :
           <LoginBox username={this.state.username} login={this.submitUser} txtvalue={this.state.txtvalue} textType={this.textType} />
         }
-        <Modal recipients={this.state.recipients} pms={this.state.pms} pmSubmit={this.pmSubmit} lastpm={this.state.lastpm} />
+        <Modal recipients={this.state.recipients} pms={this.state.pms} pmSubmit={this.pmSubmit} lastpm={this.state.lastpm} askToPoem={this.askToPoem} />
       </div>
     );
   }

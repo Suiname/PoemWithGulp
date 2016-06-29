@@ -2,6 +2,9 @@ import React, { PropTypes } from 'react';
 
 class LoginBox extends React.Component {
   render() {
+    if (!this.props.textType) {
+      return null;
+    }
     return (
       <div className="row">
         <div className="twelve columns">Login Please</div>
