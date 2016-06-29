@@ -16,12 +16,6 @@ class App extends React.Component {
     this.openModal = this.openModal.bind(this);
   }
   componentDidMount() {
-    // socket.on('updateChat', (data) => {
-    //   this.setState((state) => {
-    //     state.userMessage = data;
-    //     return state;
-    //   });
-    // });
     socket.on('updateUsers', (data) => {
       this.setState((state) => {
         state.userList = data;
@@ -59,9 +53,8 @@ class App extends React.Component {
   openModal(e) {
     e.preventDefault();
     const recipient = e.target.id;
-    console.log(recipient);
     this.setState((state) => {
-      if (!state.recipients.includes(recipient)) {
+      if (!state.recipients.includes(recipient) && recipient !== state.username) {
         state.recipients.push(recipient);
       }
       return state;

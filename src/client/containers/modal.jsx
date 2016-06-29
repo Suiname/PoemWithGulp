@@ -6,8 +6,12 @@ class Modal extends React.Component {
       return null;
     }
     return (
-      <div className="row">
-        <div className="twelve columns">Modal section</div>
+      <div className="row" id="modalContainer">
+        {this.props.recipients.map((recipient) =>
+          <div className="three columns modalBox">
+            <div className="modalHeader">{recipient}</div>
+          </div>
+        )}
       </div>
     );
   }

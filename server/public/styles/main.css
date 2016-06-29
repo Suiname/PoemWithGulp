@@ -14,6 +14,22 @@ body {
   margin-right: 40%;
   position: fixed;
 }
+#modalContainer{
+  background-color: rgb(252, 252, 252);
+  height: 200px;
+  padding: 5px;
+}
+.modalBox{
+  background-color: rgb(252, 252, 252);
+  padding: 5px;
+  border: 1px solid black;
+  height: 100%;
+}
+.modalHeader{
+  background-color: rgb(0, 0, 0);
+  color: rgb(105, 24, 1);
+  max-height: 50px;
+}
 #chatbox{
   background-color: rgb(252, 252, 252);
   height: 500px;
