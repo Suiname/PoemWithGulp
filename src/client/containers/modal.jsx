@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 class Modal extends React.Component {
   render() {
-    if (!this.props.recipient) {
+    if (this.props.recipients.length === 0) {
       return null;
     }
     return (
@@ -14,7 +14,7 @@ class Modal extends React.Component {
 }
 
 Modal.propTypes = {
-  recipient: PropTypes.string,
+  recipients: PropTypes.array,
 };
 
 export default Modal;

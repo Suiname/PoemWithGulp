@@ -8,11 +8,12 @@ import Modal from './modal.jsx';
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { txtvalue: '', userList: [], userMessage: '', loggedIn: false, chatlog: [], chatWindow: '', username: '' };
+    this.state = { txtvalue: '', userList: [], userMessage: '', loggedIn: false, chatlog: [], chatWindow: '', username: '', recipients: [] };
     this.textType = this.textType.bind(this);
     this.submitUser = this.submitUser.bind(this);
     this.chatType = this.chatType.bind(this);
     this.submitChat = this.submitChat.bind(this);
+    this.openModal = this.openModal.bind(this);
   }
   componentDidMount() {
     // socket.on('updateChat', (data) => {
@@ -55,6 +56,17 @@ class App extends React.Component {
       return state;
     });
   }
+  openModal(e) {
+    e.preventDefault();
+    const recipient = e.target.id;
+    console.log(recipient);
+    this.setState((state) => {
+      if (!state.recipients.includes(recipient)) {
+        state.recipients.push(recipient);
+      }
+      return state;
+    });
+  }
   submitUser(e) {
     e.preventDefault();
     socket.emit('adduser', { username: this.state.txtvalue });
@@ -75,10 +87,10 @@ class App extends React.Component {
     return (
       <div className="container">
         {this.state.loggedIn ?
-          <Chatroom chatlog={this.state.chatlog} chatWindow={this.state.chatWindow} chatType={this.chatType} submitChat={this.submitChat} userList={this.state.userList} /> :
+          <Chatroom chatlog={this.state.chatlog} chatWindow={this.state.chatWindow} chatType={this.chatType} submitChat={this.submitChat} userList={this.state.userList} openModal={this.openModal} /> :
           <LoginBox username={this.state.username} login={this.submitUser} txtvalue={this.state.txtvalue} textType={this.textType} />
         }
-        <Modal />
+        <Modal recipients={this.state.recipients} />
       </div>
     );
   }

@@ -26,7 +26,7 @@ class Chatroom extends React.Component {
           <div className="userlistHeader">Users</div>
           {this.props.userList.map((user) =>
             <div className="usernameBox">
-              {user}<div className="u-pull-right"><button>Message Me</button></div>
+              {user}<div className="u-pull-right"><button id={user} onClick={this.props.openModal}>Message Me</button></div>
             </div>
           )}
         </div>
@@ -41,6 +41,7 @@ Chatroom.propTypes = {
   chatType: React.PropTypes.func,
   submitChat: React.PropTypes.func,
   userList: React.PropTypes.array,
+  openModal: React.PropTypes.func,
 };
 
 export default Chatroom;
