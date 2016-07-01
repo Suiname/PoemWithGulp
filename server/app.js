@@ -104,8 +104,8 @@ io.sockets.on('connect', function(socket){
     usernames[username.username] = username.username
 
     socket.emit('updateChat', 'Welcome ' + socket.username + ', may inspiration move you brightly, everyday.', username.username)
-    // console.log(onlineClients)
-    // console.log(usernames)
+    console.log(onlineClients)
+    console.log(usernames)
     socket.broadcast.emit('updateUsers', Object.keys(usernames))
     socket.emit('updateUsers', Object.keys(usernames))
   })
@@ -138,7 +138,7 @@ io.sockets.on('connect', function(socket){
     })
 
     console.log(onlineClients[userTo])
-      console.log(onlineClients[socket.username])
+    console.log(onlineClients[socket.username])
     io.sockets.connected[onlineClients[userTo]].emit('updatePrivateChat', socket.username, userTo, privateMessage)
     io.sockets.connected[onlineClients[socket.username]].emit('updatePrivateChat', socket.username, userTo, privateMessage)
   })

@@ -1,8 +1,6 @@
 import React from 'react';
 import LoginBox from './components/loginBox.jsx';
 import App from './app.jsx';
-import io from 'socket.io-client';
-const socket = io.connect();
 
 
 class Login extends React.Component {
@@ -18,7 +16,6 @@ class Login extends React.Component {
     this.setState((state) => {
       state.username = username;
       state.loggedIn = true;
-      socket.emit('adduser', { username });
       return state;
     });
   }

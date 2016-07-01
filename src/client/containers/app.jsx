@@ -5,14 +5,15 @@ import Chatroom from './chatroom.jsx';
 import Modal from './modal.jsx';
 
 class App extends React.Component {
-  constructor() {
-    super();
-    this.state = { userList: [], userMessage: '', loggedIn: false, chatlog: [], chatWindow: '', recipients: [], pms: {}, lastpm: '', chooseToPoem: false, waiting: false };
+  constructor(props) {
+    super(props);
+    this.state = { userList: [], userMessage: '', chatlog: [], chatWindow: '', recipients: [], pms: {}, lastpm: '', chooseToPoem: false, waiting: false };
     this.chatType = this.chatType.bind(this);
     this.submitChat = this.submitChat.bind(this);
     this.openModal = this.openModal.bind(this);
     this.pmSubmit = this.pmSubmit.bind(this);
     this.askToPoem = this.askToPoem.bind(this);
+    socket.emit('adduser', { username: props.username});
   }
   componentDidMount() {
     socket.on('updateUsers', (data) => {
@@ -80,7 +81,7 @@ class App extends React.Component {
   }
   componentDidUpdate() {
     console.log('this.props.username: ', this.props.username);
-    console.log('this.state.loggedIn: ', this.state.loggedIn);
+    console.log('this.state.loggedIn: ', this.props.loggedIn);
   }
   chatType(e) {
     const value = e.target.value;
@@ -112,6 +113,7 @@ class App extends React.Component {
       const value = e.target.value;
       const sender = e.target.id.split('.')[1];
       e.target.value = '';
+      console.log('sender, value:', sender, value);
       socket.emit('pm', sender, value);
     }
   }
