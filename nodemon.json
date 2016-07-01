@@ -2,7 +2,7 @@
 {
   "restartable": "rs",
   "ignore": [
-    ".git",
+    ".git*",
     "node_modules/**/node_modules",
     "src/client/**",
     ".DS_store"
