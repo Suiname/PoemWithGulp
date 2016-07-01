@@ -8,8 +8,7 @@ require('dotenv').config();
     cors = require('cors'),
     path = require('path');
 
-import config from 'config'
-import logger from 'morgan'
+import logger from 'morgan';
 
 // Webpack Requirements
 import webpack from 'webpack';
