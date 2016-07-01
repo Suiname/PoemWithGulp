@@ -146,7 +146,8 @@ io.sockets.on('connect', function(socket){
   socket.on('invite', (recipient, sender) => {
     console.log('online clients: ', onlineClients);
     console.log('invite received');
-    socket.broadcast.emit('poem?', sender, recipient);
+    io.sockets.connected[onlineClients[recipient]].emit('poem?', recipient, sender);
+    io.sockets.connected[onlineClients[sender]].emit('poem?', recipient, sender);
   });
 
    socket.on('chatAccepted', function(sender, reciepant){

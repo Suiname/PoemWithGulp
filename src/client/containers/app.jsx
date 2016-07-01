@@ -13,7 +13,7 @@ class App extends React.Component {
     this.openModal = this.openModal.bind(this);
     this.pmSubmit = this.pmSubmit.bind(this);
     this.askToPoem = this.askToPoem.bind(this);
-    socket.emit('adduser', { username: props.username});
+    socket.emit('adduser', { username: props.username });
   }
   componentDidMount() {
     socket.on('updateUsers', (data) => {
