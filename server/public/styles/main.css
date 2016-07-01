@@ -56,6 +56,17 @@ body {
 .usernameBox{
   min-height: 50px;
 }
+#poemNotification{
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  width: 250px;
+  height: 300px;
+  z-index: 1000;
+  background-color: rgb(99, 226, 181);
+  border: 2px solid rgba(250, 250, 250, 0.8);
+  box-shadow: 1px 2px 3px 50rem rgba(82, 74, 74, 0.63);
+}
 #main-page-header {
   background-color: #F2AE72;
 }
