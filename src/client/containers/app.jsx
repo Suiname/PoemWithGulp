@@ -63,19 +63,19 @@ class App extends React.Component {
       console.log('sender: ', sender);
       console.log('this.props.username:', this.props.username);
       console.log('sender === this.props.username: ', (sender === this.props.username))
-      // if (sender === this.props.username) {
-      //   console.log('"sender === this.props.username"');
-      //   this.setState((state) => {
-      //     state.waiting = true;
-      //     return state;
-      //   });
-      // } else if (recipient === this.props.username) {
-      //   console.log('recipient === this.props.username');
-      //   this.setState((state) => {
-      //     state.chooseToPoem = true;
-      //     return state;
-      //   });
-      // }
+      if (sender === this.props.username) {
+        console.log('"sender === this.props.username"');
+        this.setState((state) => {
+          state.waiting = true;
+          return state;
+        });
+      } else if (recipient === this.props.username) {
+        console.log('recipient === this.props.username');
+        this.setState((state) => {
+          state.chooseToPoem = true;
+          return state;
+        });
+      }
     });
     socket.emit('listusers');
   }
