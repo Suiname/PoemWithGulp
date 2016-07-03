@@ -3,11 +3,12 @@ import io from 'socket.io-client';
 const socket = io.connect();
 import Chatroom from './chatroom.jsx';
 import Modal from './modal.jsx';
+import Poem from './poem.jsx';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { userList: [], userMessage: '', chatlog: [], chatWindow: '', recipients: [], pms: {}, lastpm: '', chooseToPoem: false, waiting: false, poeming: false, poemUserList: [] };
+    this.state = { userList: [], userMessage: '', chatlog: [], chatWindow: '', recipients: [], pms: {}, lastpm: '', chooseToPoem: false, waiting: false, poeming: false, poemUserList: [], poem: '' };
     this.chatType = this.chatType.bind(this);
     this.submitChat = this.submitChat.bind(this);
     this.openModal = this.openModal.bind(this);
@@ -143,7 +144,19 @@ class App extends React.Component {
       return state;
     });
   }
+  editPoem(e) {
+    e.preventDefault();
+    const value = e.target.value;
+    socket.emit('poeming', value, this.state.poemUserList);
+  }
   render() {
+    if (this.state.poeming) {
+      return (
+        <div className="container">
+          <Poem poemUserList={this.state.poemUserList} poem={this.state.poem} />
+        </div>
+      );
+    }
     return (
       <div className="container">
         <Chatroom chatlog={this.state.chatlog} chatWindow={this.state.chatWindow} chatType={this.chatType} submitChat={this.submitChat} userList={this.state.userList} openModal={this.openModal} />
@@ -159,6 +172,7 @@ class App extends React.Component {
     );
   }
 }
+
 
 App.propTypes = {
   username: React.PropTypes.string,

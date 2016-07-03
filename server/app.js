@@ -163,18 +163,23 @@ io.sockets.on('connect', function(socket){
       io.sockets.connected[onlineClients[reciepant]].emit('EnterThePoemRoom', 'this worked yo', UsersInPoemRoom)
     })
 
-   socket.on('poeming', function(userOnePoem, users, userTwoPoem, finalPoem){
+  //  socket.on('poeming', function(userOnePoem, users, userTwoPoem, finalPoem){
+  //
+  //   console.log(userOnePoem, 'userone poem')
+  //   console.log(userTwoPoem, 'usertwo poem')
+  //   console.log('----------------------------------------------------------------------this is poemingggn')
+  //   console.log(users)
+  //
+  //   var sender = users.user1;
+  //   var recipient = users.user2;
+  //   io.sockets.connected[onlineClients[sender]].emit('updatePoem', userOnePoem, userTwoPoem, finalPoem)
+  //   io.sockets.connected[onlineClients[recipient]].emit('updatePoem', userOnePoem, userTwoPoem, finalPoem)
+  //  })
+  socket.on('poeming', function(poemUpdate, poemUserList) {
+    io.sockets.connected[onlineClients[poemUserList[0]]].emit('updatePoem', poemUpdate);
+    io.sockets.connected[onlineClients[poemUserList[1]]].emit('updatePoem', poemUpdate);
+  });
 
-    console.log(userOnePoem, 'userone poem')
-    console.log(userTwoPoem, 'usertwo poem')
-    console.log('----------------------------------------------------------------------this is poemingggn')
-    console.log(users)
-
-    var sender = users.user1;
-    var recipient = users.user2;
-    io.sockets.connected[onlineClients[sender]].emit('updatePoem', userOnePoem, userTwoPoem, finalPoem)
-    io.sockets.connected[onlineClients[recipient]].emit('updatePoem', userOnePoem, userTwoPoem, finalPoem)
-   })
 
    var poem = ''
    socket.on('finalPoem', function(finalPoem){
